@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+const app = require('../app'); // Nhập ứng dụng Express từ app.js
+var debug = require('debug')('connectify-web-2:server');
+const http = require('http'); // Sử dụng module HTTP để tạo server
+
+const port = normalizePort(process.env.PORT || '3000'); // Xác định cổng
+app.set('port', port); // Cấu hình cổng cho ứng dụng
+
+const server = http.createServer(app); // Tạo server HTTP
+
+server.listen(port); // Khởi động server
+server.on('error', onError); // Xử lý lỗi khi khởi động server
+server.on('listening', onListening); // Xử lý khi server bắt đầu lắng nghe
+
+// Chức năng chuẩn hóa cổng
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
+  return false;
+}
+
+// Chức năng xử lý lỗi
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges.');
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use.');
+      process.exit(1);
+    default:
+      throw error;
+  }
+}
+
+// Chức năng xử lý khi server bắt đầu lắng nghe
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

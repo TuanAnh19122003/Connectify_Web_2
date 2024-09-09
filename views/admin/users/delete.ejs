@@ -1,0 +1,60 @@
+<section class="content"  style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Xóa vai trò
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/users" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="/admin/users/delete/<%= user.id %>" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label  class="control-label col-md-2" for="username">Họ và tên:</label>
+                    <input type="text" class="form-control" name="name" value="<%= user.username %>" readonly>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-md-2" for="email">Email:</label>
+                    <input type="email" class="form-control" name="email" value="<%= user.email %>" readonly>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-md-2" for="password">Mật khẩu:</label>
+                    <input type="password" class="form-control" name="password" value="<%= user.password %>" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="profile_picture">Ảnh sản phẩm:</label>
+                    <input type="file" class="form-control-file" name="profile_picture" accept="image/*">
+                    <% if (user.profile_picture) { %>
+                        <img src="/<%= user.profile_picture %>" alt="<%= user.username %>" class="img-fluid mt-2" style="max-width: 200px;">
+                    <% } %>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="status">Trạng thái:</label>
+                    <select class="form-control" name="status" readonly>
+                        <option value="active" <%= user.status === 'active' ? 'selected' : '' %>>Active</option>
+                        <option value="blocked" <%= user.status === 'blocked' ? 'selected' : '' %>>Blocked</option>
+                    </select>
+                </div>                
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="bio">Giới thiệu:</label>
+                    <textarea class="form-control" name="bio" rows="4" readonly><%= user.bio %></textarea>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger custom-btn">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </section>

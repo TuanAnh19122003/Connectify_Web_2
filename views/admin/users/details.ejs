@@ -1,0 +1,70 @@
+<section class="content" style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-primary text-uppercase">
+                        Chi tiết người dùng
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/users" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-primary">Thông tin người dùng</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>Mã người dùng:</strong> <%= user._id %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Họ và tên:</strong> <%= user.username %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Email:</strong> <%= user.email %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Mật khẩu:</strong> <%= user.password %>
+                        </li>
+                        <li class="list-group-item">
+                            <% if (user.profile_picture) { %>
+                                <img src="/<%= user.profile_picture %>" alt="<%= user.name %>" style="width: 250px; height: auto; object-fit: cover;">
+                            <% } %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Ngày tạo:</strong> <%= user.created_at %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Lần cập nhật cuối:</strong> <%= user.updated_at %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Trạng thái:</strong> <%= user.status %>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Giới thiệu:</strong> <%= user.bio %>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text-primary">Hành động</h4>
+                    <div class="btn-group" role="group">
+                        <a href="/admin/users/edit/<%= user._id %>" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Sửa
+                        </a>
+                        <a href="/admin/users/delete/<%= user._id %>" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Xóa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

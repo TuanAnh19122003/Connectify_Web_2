@@ -1,0 +1,52 @@
+<section class="content"  style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Danh sách vai trò
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/roles/create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Thêm
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Mã phân quyền</th>
+                        <th>Tên quyền</th>
+                        <th>Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% roles.forEach(function(role) { %>
+                        <tr>
+                            <td><%= role._id %></td>
+                            <td><%= role.name %></td>
+                            <td>
+                                <a href="/admin/roles/edit/<%= role._id %>" class="btn btn-warning btn-sm btn-action">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/admin/roles/details/<%= role._id %>" class="btn btn-info btn-sm btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <a href="/admin/roles/delete/<%= role._id %>" class="btn btn-danger btn-sm btn-action">
+                                    <i class="fas fa-trash-alt"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

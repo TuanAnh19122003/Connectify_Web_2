@@ -1,0 +1,36 @@
+<section class="content"  style="padding-top:30px">
+  <!-- Default box -->
+  <div class="card">
+      <div class="card-header">
+          <div class="row">
+              <div class="col-6">
+                  <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                      Thêm vai trò
+                  </div>
+              </div>
+              <div class="col-6">
+                  <div class="d-flex justify-content-end align-items-center">
+                      <a href="/admin/roles" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="card-body">
+          <form action="/admin/roles/create" method="POST">
+            <div class="form-group">
+                <label  class="control-label col-md-2" for="name">Tên vai trò:</label>
+                <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-primary custom-btn">
+                        <i class="fas fa-plus"></i> Create
+                    </button>
+                </div>
+            </div>
+          </form>
+      </div>
+  </div>
+</section>
