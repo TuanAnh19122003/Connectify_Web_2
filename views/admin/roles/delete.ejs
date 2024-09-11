@@ -18,17 +18,22 @@
           </div>
       </div>
       <div class="card-body">
-          <form action="/admin/roles/delete/<%= role.id %>" method="POST">
-              <div class="form-group">
-                  <label class="control-label col-md-2" for="name">Tên:</label>
-                  <input type="text" class="form-control" name="name" value="<%= role.name %>" readonly>
-              </div>
-              <div class="form-group">
-                <button type="submit" class="btn btn-danger custom-btn">
-                  <i class="fas fa-trash"></i> Delete
-                </button>
-              </div>
-          </form>
+            <dl class="row">
+                <dt class="col-sm-3">Mã vai trò:</dt>
+                <dd class="col-sm-9"><%= role._id %></dd>
+            </dl>
+            <dl class="row">
+                <dt class="col-sm-3">Tên vai trò:</dt>
+                <dd class="col-sm-9"><%= role.name %></dd>
+            </dl>
+            <form action="/admin/roles/delete/<%= role.id %>" method="POST">
+                <p>Bạn có chắc chắn muốn xóa quyền này không?</p>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger custom-btn">
+                    <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </form>
       </div>
   </div>
 </section>

@@ -1,0 +1,38 @@
+<section class="content"  style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Xóa vai trò
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/userRoles" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Tên vai trò:</dt>
+                <dd class="col-sm-9"><%= userRole.role_id ? userRole.role_id.name : 'Không xác định' %></dd>
+
+                <dt class="col-sm-3">Tên người dùng:</dt>
+                <dd class="col-sm-9"><%= userRole.user_id ? userRole.user_id.username : 'Không xác định' %></dd>
+            </dl>
+            <form action="/admin/userRoles/delete/<%= userRole.id %>" method="POST">
+                <p>Bạn có chắc chắn muốn xóa phân quyền này không?</p>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger custom-btn">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </section>

@@ -1,16 +1,16 @@
-<section class="content"  style="padding-top:30px">
+<section class="content"  style="padding-top:30px"></section>
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
             <div class="row">
                 <div class="col-6">
                     <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
-                        Danh sách vai trò
+                        Danh sách phân quyền
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="d-flex justify-content-end align-items-center">
-                        <a href="/admin/roles/create" class="btn btn-success">
+                        <a href="/admin/userRoles/create" class="btn btn-success">
                             <i class="fas fa-plus"></i> Thêm
                         </a>
                     </div>
@@ -22,24 +22,26 @@
             <table class="table table-bordered">
                 <thead class="thead-light">
                     <tr>
-                        <th>Mã vai trò</th>
-                        <th>Tên vai trò</th>
+                        <th>Mã phân quyền</th>
+                        <th>Người dùng</th>
+                        <th>Quyền hạn</th>
                         <th>Chức năng</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% roles.forEach(function(role) { %>
+                    <% userRoles.forEach(function(userRole) { %>
                         <tr>
-                            <td><%= role._id %></td>
-                            <td><%= role.name %></td>
+                            <td><%= userRole._id %></td>
+                            <td><%= userRole.user_id ? userRole.user_id.username : 'Không xác định' %></td>
+                            <td><%= userRole.role_id ? userRole.role_id.name : 'Không xác định' %></td>
                             <td>
-                                <a href="/admin/roles/edit/<%= role._id %>" class="btn btn-warning btn-sm btn-action">
+                                <a href="/admin/userRoles/edit/<%= userRole._id %>" class="btn btn-warning btn-sm btn-action">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <a href="/admin/roles/details/<%= role._id %>" class="btn btn-info btn-sm btn-action">
+                                <a href="/admin/userRoles/details/<%= userRole._id %>" class="btn btn-info btn-sm btn-action">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </a>
-                                <a href="/admin/roles/delete/<%= role._id %>" class="btn btn-danger btn-sm btn-action">
+                                <a href="/admin/userRoles/delete/<%= userRole._id %>" class="btn btn-danger btn-sm btn-action">
                                     <i class="fas fa-trash-alt"></i> Xóa
                                 </a>
                             </td>
