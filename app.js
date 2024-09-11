@@ -19,6 +19,17 @@ const setLayout = (layout) => {
     next();
   };
 };
+const { format } = require('date-fns');
+
+function formatDate(date) {
+    return format(new Date(date), 'dd/MM/yyyy HH:mm:ss');
+}
+
+// Thêm hàm vào `res.locals` để có thể sử dụng trong EJS
+app.use((req, res, next) => {
+    res.locals.formatDate = formatDate;
+    next();
+});
 
 
 // Kết nối với MongoDB

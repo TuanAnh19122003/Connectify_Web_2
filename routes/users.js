@@ -4,8 +4,11 @@ const User = require('../models/User');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const { format } = require('date-fns');
 
 const saltRounds = 10; // Bạn có thể điều chỉnh số vòng salt
+
+
 
 // Cấu hình multer để lưu trữ ảnh
 const storage = multer.diskStorage({
@@ -49,8 +52,12 @@ router.get('/', async (req, res) => {
 //Chi tiết người dùng
 router.get('/details/:id', async (req, res) => {
     try {
-      const user = await User.findById(req.params.id);
-      res.render('admin/users/details', { user });
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).send('User not found');
+        // Định dạng ngày giờ
+        user.created_at = format(user.created_at, 'dd/MM/yyyy HH:mm:ss');
+        user.updated_at = format(user.updated_at, 'dd/MM/yyyy HH:mm:ss');
+        res.render('admin/users/details', { user });
     } catch (err) {
       res.status(500).send(err.message);
     }

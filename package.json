@@ -9,6 +9,7 @@
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "cookie-parser": "~1.4.4",
+    "date-fns": "^3.6.0",
     "debug": "~2.6.9",
     "ejs": "^3.1.10",
     "ejs-layouts": "^0.0.1",

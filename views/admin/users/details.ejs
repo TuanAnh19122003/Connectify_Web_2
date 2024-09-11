@@ -58,19 +58,11 @@
                             <%= user.password %>
                         </dd>
 
-                        <dt class="col-sm-3">
-                            Ngày tạo:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.created_at %>
-                        </dd>
+                        <dt class="col-sm-3">Ngày tạo:</dt>
+                        <dd class="col-sm-9"><%= formatDate(user.created_at) %></dd>
 
-                        <dt class="col-sm-3">
-                            Lần cập nhật cuối:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.updated_at %>
-                        </dd>
+                        <dt class="col-sm-3">Lần cập nhật cuối:</dt>
+                        <dd class="col-sm-9"><%= formatDate(user.updated_at) %></dd>
 
                         <dt class="col-sm-3">
                             Trạng thái:
