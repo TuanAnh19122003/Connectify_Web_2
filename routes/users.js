@@ -110,7 +110,8 @@ router.post('/edit/:id', upload.single('profile_picture'), async (req, res) => {
             username: req.body.username,
             email: req.body.email,
             bio: req.body.bio,
-            status: req.body.status
+            status: req.body.status,
+            updated_at: Date.now()
         };
 
         // Nếu có ảnh mới, cập nhật đường dẫn của ảnh
@@ -144,7 +145,6 @@ router.get('/delete/:id', async (req, res) => {
     }
 });
 
-// Xóa người dùng
 // Xóa người dùng
 router.post('/delete/:id', async (req, res) => {
     try {

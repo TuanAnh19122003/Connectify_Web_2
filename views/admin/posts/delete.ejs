@@ -1,0 +1,74 @@
+<section class="content"  style="padding-top:30px"></section>
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Xóa bài đăng
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/posts" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Ảnh bài đăng:</dt>
+                <dd class="col-sm-9">
+                    <% if (post.image) { %>
+                        <img src="/<%= post.image %>" alt="<%= post.username %>" class="img-fluid mt-2" style="max-width: 200px;">
+                    <% } %>
+                </dd>
+
+                <dt class="col-sm-3">
+                    Tên người dùng:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= post.user_id ? post.user_id.username : 'Không xác định' %>
+                </dd>
+
+                <dt class="col-sm-3">
+                    Nội dung bài đăng:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= post.content %>
+                </dd>
+                
+                <dt class="col-sm-3">
+                    Số lượt thích:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= post.like_count %>
+                </dd>
+
+                <dt class="col-sm-3">
+                    Ngày đăng:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= formatDate(post.created_at) %>
+                </dd>
+
+                <dt class="col-sm-3">
+                    Lần cập nhật cuối:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= formatDate(post.updated_at) %>
+                </dd>
+            </dl>
+            <form action="/admin/posts/delete/<%= post.id %>" method="POST">
+                <p>Bạn có chắc chắn muốn xóa phân quyền này không?</p>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger custom-btn">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </section>

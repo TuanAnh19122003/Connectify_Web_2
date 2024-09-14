@@ -1,0 +1,81 @@
+<section class="content" style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6 text-end text-danger text-uppercase">
+                    <div class="d-flex justify-content-start align-items-center text-primary text-uppercase">
+                        Chi tiết bài đăng
+                    </div>
+                </div>
+                <div class="col-6 text-right">
+                    <a href="/admin/posts/edit/<%= post._id %>" class="btn btn-warning mr-2">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="/admin/posts" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-9">
+                    <h4 class="text-primary">Thông tin phân quyền</h4>
+                    <dl class="row">
+                        <dt class="col-sm-3">
+                            Ảnh bài đăng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <% if (post.image) { %>
+                                <img src="/<%= post.image %>" alt="<%= post.username %>" style="width: 250px; height: auto; object-fit: cover;">
+                            <% } %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Mã bài đăng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= post._id %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Người dùng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= post.user_id ? post.user_id.username : 'Không xác định' %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Nội dung bài đăng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= post.content %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Số lượt thích:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= post.like_count %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Ngày đăng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= formatDate(post.created_at) %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Lần cập nhật cuối:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= formatDate(post.updated_at) %>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
