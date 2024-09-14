@@ -67,6 +67,7 @@ router.post('/create', upload.single('image'), async (req, res) => {
 
         const post = new Post({
             user_id: req.body.username,
+            title: req.body.title,
             content: req.body.content,
             image: req.file ? `uploads/${req.file.filename}` : null,
             like_count: req.body.like_count
@@ -97,6 +98,7 @@ router.post('/edit/:id', upload.single('image'), async (req, res) => {
         const updates = {
             user_id: req.body.username,
             content: req.body.content,
+            title: req.body.title,
             like_count: req.body.like_count,
             updated_at: Date.now()
         };

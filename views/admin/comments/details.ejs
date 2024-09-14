@@ -1,0 +1,46 @@
+<section class="content" style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-primary text-uppercase">
+                        Chi Tiết Bình Luận
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/comments" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Nội dung bình luận:</dt>
+                <dd class="col-sm-9"><%= comment.content %></dd>
+                
+                <dt class="col-sm-3">Người dùng:</dt>
+                <dd class="col-sm-9"><%= comment.user_id.username %></dd>
+
+                <dt class="col-sm-3">Bài viết:</dt>
+                <dd class="col-sm-9"><%= comment.post_id.title %></dd>
+                
+                <dt class="col-sm-3">Số lượt thích:</dt>
+                <dd class="col-sm-9"><%= comment.like_count %></dd>
+
+                <dt class="col-sm-3">Ngày tạo:</dt>
+                <dd class="col-sm-9"><%= formatDate(comment.created_at) %></dd>
+            </dl>
+        </div>
+    </div>
+</section>
+
+<script>
+    function formatDate(date) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        return new Date(date).toLocaleDateString('en-GB', options);
+    }
+</script>

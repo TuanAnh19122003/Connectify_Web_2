@@ -1,0 +1,44 @@
+<section class="content" style="padding-top:30px">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Xóa theo dõi
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/follows" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Người dùng thực hiện theo dõi:</dt>
+                <dd class="col-sm-9">
+                    <%= follow.follower_id ? follow.follower_id.username : 'Không xác định' %>
+                </dd>
+                <dt class="col-sm-3">Người dùng được theo dõi:</dt>
+                <dd class="col-sm-9">
+                    <%= follow.following_id ? follow.following_id.username : 'Không xác định' %>
+                </dd>
+                <dt class="col-sm-3">Ngày theo dõi:</dt>
+                <dd class="col-sm-9">
+                    <%= formatDate(follow.created_at) %>
+                </dd>
+            </dl>
+            <form action="/admin/follows/delete/<%= follow._id %>" method="POST">
+                <p>Bạn có chắc chắn muốn xóa phân quyền này không?</p>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

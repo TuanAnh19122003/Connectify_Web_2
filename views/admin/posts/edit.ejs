@@ -29,8 +29,12 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label  class="control-label col-md-2" for="title">Tiêu đề bài đăng:</label>
+                    <input type="text" class="form-control" name="title" value="<%= post.title %>" required>
+                </div>
+                <div class="form-group">
                     <label  class="control-label col-md-2" for="content">Nội dung bài đăng:</label>
-                    <input type="text" class="form-control" name="content" value="<%= post.content %>" required>
+                    <textarea class="form-control" name="content" required><%= post.content %></textarea>
                 </div>
                 <div class="form-group">
                     <label  class="control-label col-md-2" for="like_count">Số lượt thích:</label>

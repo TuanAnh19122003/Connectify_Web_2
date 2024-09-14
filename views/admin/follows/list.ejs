@@ -1,0 +1,54 @@
+<section class="content"  style="padding-top:30px"></section>
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Danh sách theo dõi
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/follows/create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Thêm
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Mã theo dõi</th>
+                        <th>Người dùng thực hiện theo dõi</th>
+                        <th>Người dùng được theo dõi</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% follows.forEach(function(follow) { %>
+                        <tr>
+                            <td><%= follow._id %></td>
+                            <td><%= follow.follower_id ? follow.follower_id.username : 'Không xác định' %></td>
+                            <td><%= follow.following_id ? follow.following_id.username : 'Không xác định' %></td>
+                            <td>
+                                <a href="/admin/follows/edit/<%= follow._id %>" class="btn btn-warning btn-sm btn-action">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/admin/follows/details/<%= follow._id %>" class="btn btn-info btn-sm btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <a href="/admin/follows/delete/<%= follow._id %>" class="btn btn-danger btn-sm btn-action">
+                                    <i class="fas fa-trash-alt"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
