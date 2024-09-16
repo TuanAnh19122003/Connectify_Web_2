@@ -8,10 +8,11 @@ function redirectIfLoggedIn(req, res, next) {
 }
 
 function ensureAuthenticated(req, res, next) {
-    if (req.session.user) {
+    if (req.session && req.session.user) {
         return next();
+    } else {
+        res.redirect('/auth/login');
     }
-    res.redirect('/auth/login');  // Chuyển hướng đến trang login nếu chưa đăng nhập
 }
 
 module.exports = { redirectIfLoggedIn,ensureAuthenticated };

@@ -5,7 +5,6 @@ const multer = require('multer');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const { format } = require('date-fns');
-const { ensureAuthenticated } = require('../views/auth/middleware/middleware');
 
 const saltRounds = 10; // Bạn có thể điều chỉnh số vòng salt
 
@@ -41,7 +40,7 @@ router.post('/update-status/:id', async (req, res) => {
 });
 
 // Lấy tất cả người dùng
-router.get('/',ensureAuthenticated,async (req, res) => {
+router.get('/',async (req, res) => {
     try {
         const users = await User.find();
         res.render('admin/users/list', { users });
@@ -51,7 +50,7 @@ router.get('/',ensureAuthenticated,async (req, res) => {
 });
 
 //Chi tiết người dùng
-router.get('/details/:id', ensureAuthenticated, async (req, res) => {
+router.get('/details/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).send('User not found');
@@ -90,7 +89,7 @@ router.post('/create', upload.single('profile_picture'), async (req, res) => {
 });
 
 // Hiển thị trang chỉnh sửa người dùng
-router.get('/edit/:id',ensureAuthenticated ,async (req, res) => {
+router.get('/edit/:id' ,async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).send('User not found');

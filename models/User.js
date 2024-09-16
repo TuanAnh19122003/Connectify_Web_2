@@ -10,7 +10,9 @@ const userSchema = new Schema({
     bio: { type: String },
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
-    status: { type: String, enum: ['active', 'blocked'], default: 'active' }
+    status: { type: String, enum: ['active', 'blocked'], default: 'active' },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 });
 
 // Middleware để mã hóa mật khẩu trước khi lưu

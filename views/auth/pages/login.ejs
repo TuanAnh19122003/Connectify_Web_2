@@ -19,9 +19,64 @@
     background-color: #f2dede;
     border-color: #ebccd1;
 }
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+/* Căn chỉnh cho modal */
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    position: relative;
+    text-align: center;
+}
+
+.modal-header {
+    margin-bottom: 15px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #aaa;
+}
+
+.modal-close:hover {
+    color: #000;
+}
+
 
 </style>
 <body>
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span id="modalClose" class="modal-close">&times;</span>
+            <div class="alert alert-danger">
+                <span id="errorMessage"></span>
+            </div>
+        </div>
+    </div>
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
@@ -47,11 +102,16 @@
                         </span>
                     </div>
                     <% if (typeof error !== 'undefined') { %>
-                        <div class="alert alert-danger">
-                            <%= error %>
-                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const error = "<%= error %>";
+                                if (error) {
+                                    document.getElementById('errorMessage').textContent = error;
+                                    document.getElementById('errorModal').style.display = 'flex';
+                                }
+                            });
+                        </script>
                     <% } %>
-
                     <div class="container-login100-form-btn">
                         <button class="login100-form-btn" type="submit">Login</button>
                     </div>
@@ -71,5 +131,22 @@
             </div>
         </div>
     </div>
+    <script>
+        // JavaScript to handle modal display
+        const modalClose = document.getElementById('modalClose');
+        const errorModal = document.getElementById('errorModal');
+
+        // Xử lý đóng modal khi nhấp vào dấu 'x'
+        modalClose.onclick = function() {
+            errorModal.style.display = 'none';
+        }
+
+        // Đóng modal khi nhấp vào ngoài modal-content
+        window.onclick = function(event) {
+            if (event.target === errorModal) {
+                errorModal.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>

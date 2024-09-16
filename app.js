@@ -57,13 +57,12 @@ app.use((req, res, next) => {
 });
 
 app.use(session({
-  secret: 'Tank',  // Khóa bảo mật cho session
-  resave: false,            // Không lưu lại session nếu không có thay đổi
-  saveUninitialized: false, // Không tạo session mới cho các request không có thay đổi
-  cookie: {
-      maxAge: 1000 * 60 * 60 * 24 // Thời gian sống của session (ở đây là 1 ngày)
-  }
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }  // 1 ngày
 }));
+
 // Middleware để tự động truyền session user vào tất cả các view
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;

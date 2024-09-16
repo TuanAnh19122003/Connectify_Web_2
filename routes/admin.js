@@ -11,21 +11,27 @@ const notificationsRouter = require('./notifications');
 const followsRouter = require('./follows');
 const rolesRouter = require('./roles');
 const userRolesRouter = require('./userRoles');
+const { ensureAuthenticated } = require('../views/auth/middleware/middleware');
 
-// Middleware để bảo vệ các route cần đăng nhập
-function ensureAuthenticated(req, res, next) {
+
+// Middleware truyền thông tin user vào tất cả các route
+router.use((req, res, next) => {
     if (req.session.user) {
-        return next();
+        res.locals.user = req.session.user;
+    } else {
+        res.locals.user = null;
     }
-    res.redirect('/auth/login');  // Chuyển hướng đến trang login nếu chưa đăng nhập
-}
-
-// Route trang admin, chỉ cho phép nếu đã đăng nhập
-router.get('/', ensureAuthenticated, (req, res) => {
-    console.log('Dữ liệu session:', req.session);
-    res.render('admin/dashboards/index', {  user: req.session.user  });
+    next();
 });
 
+// Sử dụng middleware ensureAuthenticated cho toàn bộ route admin
+router.use(ensureAuthenticated);
+
+// Route trang admin
+router.get('/', (req, res) => {
+    console.log('Dữ liệu session:', req.session);
+    res.render('admin/dashboards/index');
+});
 
 // Đảm bảo rằng bạn sử dụng Router đúng cách với các middleware hợp lệ
 router.use('/users', usersRouter);
