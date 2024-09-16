@@ -12,8 +12,18 @@ const followsRouter = require('./follows');
 const rolesRouter = require('./roles');
 const userRolesRouter = require('./userRoles');
 
-router.get('/', (req, res) => {
-    res.render('admin/dashboards/index', { content: 'Home' });
+// Middleware để bảo vệ các route cần đăng nhập
+function ensureAuthenticated(req, res, next) {
+    if (req.session.user) {
+        return next();
+    }
+    res.redirect('/auth/login');  // Chuyển hướng đến trang login nếu chưa đăng nhập
+}
+
+// Route trang admin, chỉ cho phép nếu đã đăng nhập
+router.get('/', ensureAuthenticated, (req, res) => {
+    console.log('Dữ liệu session:', req.session);
+    res.render('admin/dashboards/index', {  user: req.session.user  });
 });
 
 

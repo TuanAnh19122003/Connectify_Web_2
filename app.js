@@ -5,10 +5,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const ejsLayouts = require('express-ejs-layouts');
-
+const session = require('express-session');
 
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
+const authRouter = require('./routes/auth');
 
 const app = express();
 
@@ -39,23 +40,35 @@ const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to Database'));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-// Sử dụng express-ejs-layouts
 app.use(ejsLayouts);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Cài đặt các layout mặc định cho các route
 app.use((req, res, next) => {
   if (req.path.startsWith('/admin')) {
     res.locals.layout = 'admin/layouts/main'; // Layout cho trang quản lý
-  } else {
+  } else if (req.path.startsWith('/user')) {
     res.locals.layout = 'user/layouts/main'; // Layout cho trang người dùng
+  } else if (req.path.startsWith('/auth')) {
+    res.locals.layout = 'auth/layouts/main'; // Không sử dụng layout cho trang đăng nhập và đăng ký
   }
   next();
 });
 
-
+app.use(session({
+  secret: 'Tank',  // Khóa bảo mật cho session
+  resave: false,            // Không lưu lại session nếu không có thay đổi
+  saveUninitialized: false, // Không tạo session mới cho các request không có thay đổi
+  cookie: {
+      maxAge: 1000 * 60 * 60 * 24 // Thời gian sống của session (ở đây là 1 ngày)
+  }
+}));
+// Middleware để tự động truyền session user vào tất cả các view
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -63,10 +76,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // Routes
 app.use('/user', indexRouter);
 app.use('/admin', adminRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

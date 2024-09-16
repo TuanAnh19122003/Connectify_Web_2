@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<style>
+    /* Ẩn trường input mặc định */
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* Tùy chỉnh nhãn để làm nút chọn ảnh */
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-label:hover {
+    background-color: #45a049;
+}
+
+.custom-file-label i {
+    margin-right: 8px;
+}
+
+.custom-file-label:active {
+    background-color: #3e8e41;
+}
+
+/* Thêm biểu tượng camera nhỏ */
+.custom-file-label i {
+    font-size: 16px;
+}
+
+</style>
+<body>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <div class="login100-pic js-tilt" data-tilt style="padding-top: 50px;">
+                    <img src="/images/img-01.png" alt="IMG">
+                </div>
+                <form class="login100-form validate-form" method="POST" action="/auth/register" enctype="multipart/form-data"> 
+                    <span class="login100-form-title">Member Register</span>
+
+                    <div class="wrap-input100 validate-input" data-validate="Username is required">
+                        <input class="input100" type="text" name="username" placeholder="Username" value="<%= username || '' %>" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                        <input class="input100" type="text" name="email" placeholder="Email" value="<%= email || '' %>" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <input class="input100" type="password" name="password" placeholder="Password" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100">
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="inputfile" required>
+                        <label for="profile_picture" class="custom-file-label">
+                            <i class="fa fa-image" aria-hidden="true"></i> Chọn ảnh đại diện
+                        </label>
+                    </div>
+                    
+                
+
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">Register</button>
+                    </div>
+
+                    <div class="text-center p-t-12">
+                        <span class="txt1">Already have an account?</span>
+                        <a class="txt2" href="/auth/login">Login here</a>
+                    </div>
+
+                    <div class="text-center p-t-136">
+                        <a class="txt2" href="/auth/login">
+                            Go to Login
+                            <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.getElementById('profile_picture').addEventListener('change', function() {
+        var fileName = this.files[0].name;
+        var label = this.nextElementSibling;
+        label.textContent = fileName;  // Hiển thị tên ảnh
+    });
+</script>
+
+</html>
