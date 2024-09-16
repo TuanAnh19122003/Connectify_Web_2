@@ -65,6 +65,18 @@
 .modal-close:hover {
     color: #000;
 }
+/* Thay đổi kích thước biểu tượng và căn chỉnh */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.input100 {
+    padding-right: 40px; /* Tạo khoảng trống cho biểu tượng */
+}
 
 
 </style>
@@ -95,12 +107,21 @@
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <input class="input100" type="password" name="password" placeholder="Password" required>
+                        <input id="password" class="input100" type="password" name="password" placeholder="Password" required>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-lock" aria-hidden="true"></i>
                         </span>
+                        <span class="toggle-password">
+                            <i class="fa fa-eye" aria-hidden="true" id="togglePassword"></i>
+                        </span>
                     </div>
+
+                    <!-- <div class="text-center p-t-12">
+                        <label>
+                            <input type="checkbox" name="rememberMe"> Remember Me
+                        </label>
+                    </div> -->
                     <% if (typeof error !== 'undefined') { %>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
@@ -118,7 +139,7 @@
 
                     <div class="text-center p-t-12">
                         <span class="txt1">Forgot</span>
-                        <a class="txt2" href="/auth/register">Username / Password?</a>
+                        <a class="txt2" href="/auth/forgot-password">Username / Password?</a>
                     </div>
 
                     <div class="text-center p-t-136">
@@ -147,6 +168,20 @@
                 errorModal.style.display = 'none';
             }
         }
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+
+            togglePassword.addEventListener('click', () => {
+                // Chuyển đổi loại giữa 'password' và 'text'
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+
+                // Thay đổi biểu tượng của mắt
+                togglePassword.classList.toggle('fa-eye-slash');
+            });
+        });
+
     </script>
 </body>
 </html>

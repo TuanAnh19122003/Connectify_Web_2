@@ -42,9 +42,11 @@ router.post('/login', async (req, res) => {
         req.session.user = {
             id: user._id,
             email: user.email,
+            password : user.password,
             name: user.username,
             profile_picture: user.profile_picture
         };
+
 
         res.redirect('/admin');
     } catch (err) {

@@ -7,6 +7,7 @@ const path = require('path');
 const ejsLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 
+
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
@@ -32,7 +33,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // Kết nối với MongoDB
 mongoose.connect('mongodb://0.0.0.0:27017/Connectify_Web');
 
@@ -57,11 +57,12 @@ app.use((req, res, next) => {
 });
 
 app.use(session({
-  secret: 'your_secret_key',
+  secret: 'Connectify_Web',
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 1000 * 60 * 60 * 24 }  // 1 ngày
 }));
+
 
 // Middleware để tự động truyền session user vào tất cả các view
 app.use((req, res, next) => {
