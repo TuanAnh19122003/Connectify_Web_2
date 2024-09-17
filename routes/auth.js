@@ -28,8 +28,9 @@ router.post('/login', async (req, res) => {
         }
 
         // In ra mật khẩu đã mã hóa từ database và mật khẩu người dùng nhập
-        console.log('Mật khẩu người dùng nhập:', password);
-        console.log('Mật khẩu đã mã hóa từ database:', user.password);
+        //console.log('Tài khoản người dùng nhập:', email);
+        //console.log('Mật khẩu người dùng nhập:', password);
+        //console.log('Mật khẩu đã mã hóa từ database:', user.password);
 
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -42,7 +43,7 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        const userRole = await UserRole.findOne()
+        const userRole = await UserRole.findOne({ user_id: user._id })
             .populate({
                 path: 'user_id',
                 select: 'username',
@@ -53,19 +54,13 @@ router.post('/login', async (req, res) => {
                 select: 'name',
                 options: { strictPopulate: false }
             });
+
         if (!userRole) {
             return res.render('auth/pages/login', {
                 error: 'Phân quyền không tìm thấy',
                 email
             });
         }
-
-        if (userRole) {
-            console.log('Thông tin phân quyền:', userRole.role_id.name);
-        } else {
-            console.log('userRole không tồn tại');
-        }
-        
 
         req.session.user = {
             id: user._id,

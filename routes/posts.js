@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const fs = require('fs');
 
 // Cấu hình multer để lưu trữ ảnh
 const storage = multer.diskStorage({
@@ -16,7 +17,17 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Chỉ cho phép tải lên ảnh'), false);
+        }
+    }
+});
+
 
 // Lấy tất cả bài viết
 router.get('/', async (req, res) => {
@@ -61,7 +72,7 @@ router.get('/create', async (req, res) => {
 });
 
 // Tạo người dùng mới
-router.post('/create', upload.single('image'), async (req, res) => {
+router.post('/create', upload.array('images', 10), async (req, res) => {
     try {
         // Mã hóa mật khẩu
 
@@ -69,7 +80,7 @@ router.post('/create', upload.single('image'), async (req, res) => {
             user_id: req.body.username,
             title: req.body.title,
             content: req.body.content,
-            image: req.file ? `uploads/${req.file.filename}` : null,
+            images: req.files.map(file => `uploads/${file.filename}`),
             like_count: req.body.like_count
         });
 
@@ -77,6 +88,27 @@ router.post('/create', upload.single('image'), async (req, res) => {
         res.redirect('/admin/posts');
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+});
+
+router.get('/delete-image/:id', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) return res.status(404).send('Bài đăng không tìm thấy');
+
+        // Xóa ảnh từ hệ thống tập tin
+        const imagePath = path.join(__dirname, '../public', req.query.image);
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+        }
+
+        // Xóa ảnh khỏi cơ sở dữ liệu
+        post.images = post.images.filter(img => img !== req.query.image);
+        await post.save();
+
+        res.redirect(`/admin/posts/edit/${post._id}`);
+    } catch (error) {
+        res.status(500).send(error.message);
     }
 });
 
@@ -92,9 +124,13 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 // Cập nhật bài đăng
-router.post('/edit/:id', upload.single('image'), async (req, res) => {
+router.post('/edit/:id', upload.array('images', 10), async (req, res) => {
     try {
-        // Tạo đối tượng cập nhật
+        // Lấy bài đăng hiện tại
+        const post = await Post.findById(req.params.id);
+        if (!post) return res.status(404).send('Bài đăng không tìm thấy');
+
+        // Cập nhật thông tin bài đăng
         const updates = {
             user_id: req.body.username,
             content: req.body.content,
@@ -103,16 +139,17 @@ router.post('/edit/:id', upload.single('image'), async (req, res) => {
             updated_at: Date.now()
         };
 
-        // Nếu có ảnh mới, cập nhật đường dẫn của ảnh
-        if (req.file) {
-            updates.image = `uploads/${req.file.filename}`;
+        // Cập nhật ảnh mới nếu có
+        if (req.files && req.files.length > 0) {
+            updates.images = post.images.concat(req.files.map(file => `uploads/${file.filename}`));
+        } else {
+            updates.images = post.images;
         }
 
-        // Cập nhật người dùng
-        const post = await Post.findByIdAndUpdate(req.params.id, updates, { new: true });
-        if (!post) return res.status(404).send('User not found');
+        // Cập nhật bài đăng
+        await Post.findByIdAndUpdate(req.params.id, updates, { new: true });
 
-        // Điều hướng đến danh sách người dùng sau khi cập nhật
+        // Điều hướng đến danh sách bài đăng sau khi cập nhật
         res.redirect('/admin/posts');
     } catch (error) {
         res.status(400).json({ message: error.message });

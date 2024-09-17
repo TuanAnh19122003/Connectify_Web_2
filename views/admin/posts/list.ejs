@@ -1,5 +1,17 @@
-<section class="content"  style="padding-top:30px"></section>
-    <!-- Default box -->
+<style>
+.thumbnail-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.thumbnail-container img {
+    cursor: pointer;
+}
+
+</style>
+<section class="content" style="padding-top:30px">
+<!-- Default box -->
     <div class="card">
         <div class="card-header">
             <div class="row">
@@ -15,7 +27,6 @@
                         </a>
                     </div>
                 </div>
-                
             </div>
         </div>
         <div class="card-body">
@@ -33,7 +44,35 @@
                     <% posts.forEach(function(post) { %>
                         <tr>
                             <td>
-                                <img src="/<%= post.image %>" alt="image" style="width: 120px; height: 120px; object-fit: fill;">
+                                <% if (post.images && post.images.length > 0) { %>
+                                    <!-- Hiển thị một ảnh đại diện -->
+                                    <img src="/<%= post.images[0] %>" alt="image" style="width: 120px; height: 120px; object-fit: fill; cursor: pointer;"
+                                        data-toggle="modal" data-target="#modal-<%= post._id %>">
+                                    
+                                    <!-- Modal để hiển thị tất cả ảnh -->
+                                    <div class="modal fade" id="modal-<%= post._id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= post._id %>" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modalLabel-<%= post._id %>">Ảnh bài đăng</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <% post.images.forEach(function(image) { %>
+                                                        <img src="/<%= image %>" alt="image" style="width: 100%; height: auto; margin-bottom: 10px;">
+                                                    <% }); %>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <p>Không có ảnh</p>
+                                <% } %>
                             </td>
                             <td><%= post._id %></td>
                             <td><%= post.user_id ? post.user_id.username : 'Không xác định' %></td>

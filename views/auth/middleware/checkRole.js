@@ -8,7 +8,8 @@ const checkRole = (requiredRole) => {
                 return res.status(401).send('Bạn cần đăng nhập');
             }
 
-            const userRole = await UserRole.findOne()
+            // Tìm phân quyền của người dùng đang đăng nhập
+            const userRole = await UserRole.findOne({ user_id: req.session.user.id })
             .populate({
                 path: 'user_id',
                 select: 'username',
@@ -38,5 +39,6 @@ const checkRole = (requiredRole) => {
         }
     };
 };
+
 
 module.exports = checkRole;

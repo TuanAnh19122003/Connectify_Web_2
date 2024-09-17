@@ -13,7 +13,19 @@ const rolesRouter = require('./roles');
 const userRolesRouter = require('./userRoles');
 const checkRole = require('../views/auth/middleware/checkRole');
 
+
+// Middleware truyền thông tin user vào tất cả các route
+router.use((req, res, next) => {
+    if (req.session.user) {
+        res.locals.user = req.session.user;
+    } else {
+        res.locals.user = null;
+    }
+    next();
+});
+
 router.get('/', checkRole('Người dùng'), (req, res) => {
+    console.log('Dữ liệu session:', req.session);
     res.render('user/pages/index', { content: 'Home' });
 });
 

@@ -27,9 +27,15 @@
                             Ảnh bài đăng:
                         </dt>
                         <dd class="col-sm-9">
-                            <% if (post.image) { %>
-                                <img src="/<%= post.image %>" alt="<%= post.username %>" style="width: 250px; height: auto; object-fit: cover;">
-                            <% } %>
+                            <div style="display: flex; overflow-x: auto; padding: 10px 0;">
+                                <% if (post.images && post.images.length > 0) { %>
+                                    <% post.images.forEach(function(image) { %>
+                                        <img src="/<%= image %>" alt="image" style="width: 150px; height: 150px; object-fit: fill; margin-right: 10px;">
+                                    <% }); %>
+                                <% } else { %>
+                                    <p>Không có ảnh</p>
+                                <% } %>
+                            </div>
                         </dd>
 
                         <dt class="col-sm-3">
