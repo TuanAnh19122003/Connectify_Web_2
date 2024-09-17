@@ -4,6 +4,8 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const crypto = require('crypto');
+require('dotenv').config();
+
 
 const { redirectIfLoggedIn } = require('../views/auth/middleware/middleware'); 
 const router = express.Router();
@@ -109,14 +111,14 @@ router.post('/register', upload.single('profile_picture'), async (req, res) => {
 
 const nodemailer = require('nodemailer');
 
+
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'trinhtuananh1312003@gmail.com', // Thay bằng email của bạn
-        pass: 'tjwc pvzi ijrx wvtx'     // Thay bằng mật khẩu ứng dụng bạn đã tạo
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
-
 
 // Hiển thị trang quên mật khẩu
 router.get('/forgot-password', (req, res) => {
