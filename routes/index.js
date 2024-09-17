@@ -11,8 +11,9 @@ const notificationsRouter = require('./notifications');
 const followsRouter = require('./follows');
 const rolesRouter = require('./roles');
 const userRolesRouter = require('./userRoles');
+const checkRole = require('../views/auth/middleware/checkRole');
 
-router.get('/', (req, res) => {
+router.get('/', checkRole('Người dùng'), (req, res) => {
     res.render('user/pages/index', { content: 'Home' });
 });
 

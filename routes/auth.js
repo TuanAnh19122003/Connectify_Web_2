@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path'); 
 const User = require('../models/User');
+const UserRole = require('../models/UserRole');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const crypto = require('crypto');
@@ -41,16 +42,47 @@ router.post('/login', async (req, res) => {
             });
         }
 
+        const userRole = await UserRole.findOne()
+            .populate({
+                path: 'user_id',
+                select: 'username',
+                options: { strictPopulate: false }
+            })
+            .populate({
+                path: 'role_id',
+                select: 'name',
+                options: { strictPopulate: false }
+            });
+        if (!userRole) {
+            return res.render('auth/pages/login', {
+                error: 'Phân quyền không tìm thấy',
+                email
+            });
+        }
+
+        if (userRole) {
+            console.log('Thông tin phân quyền:', userRole.role_id.name);
+        } else {
+            console.log('userRole không tồn tại');
+        }
+        
+
         req.session.user = {
             id: user._id,
             email: user.email,
             password : user.password,
             name: user.username,
-            profile_picture: user.profile_picture
+            profile_picture: user.profile_picture,
+            role: userRole.role_id.name
         };
 
-
-        res.redirect('/admin');
+        if (userRole.role_id.name === 'Quản lý') {
+            res.redirect('/admin');
+        } else if (userRole.role_id.name === 'Người dùng') {
+            res.redirect('/user');
+        } else {
+            res.redirect('/');
+        }
     } catch (err) {
         res.status(500).render('auth/pages/login', { 
             error: 'Có lỗi xảy ra, vui lòng thử lại sau' 

@@ -12,6 +12,7 @@ const followsRouter = require('./follows');
 const rolesRouter = require('./roles');
 const userRolesRouter = require('./userRoles');
 const { ensureAuthenticated } = require('../views/auth/middleware/middleware');
+const checkRole = require('../views/auth/middleware/checkRole');
 
 
 // Middleware truyền thông tin user vào tất cả các route
@@ -28,7 +29,7 @@ router.use((req, res, next) => {
 router.use(ensureAuthenticated);
 
 // Route trang admin
-router.get('/', (req, res) => {
+router.get('/', checkRole('Quản lý'), (req, res) => {
     console.log('Dữ liệu session:', req.session);
     res.render('admin/dashboards/index');
 });

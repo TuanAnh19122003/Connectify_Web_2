@@ -11,6 +11,7 @@ const session = require('express-session');
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -52,6 +53,8 @@ app.use((req, res, next) => {
     res.locals.layout = 'user/layouts/main'; // Layout cho trang người dùng
   } else if (req.path.startsWith('/auth')) {
     res.locals.layout = 'auth/layouts/main'; // Không sử dụng layout cho trang đăng nhập và đăng ký
+  } else{
+    res.locals.layout = 'user/layouts/main';
   }
   next();
 });
@@ -80,7 +83,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/user', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/auth', authRouter);
-
+app.use('/', userRoutes);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
