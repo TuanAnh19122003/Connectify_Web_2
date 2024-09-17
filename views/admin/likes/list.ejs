@@ -1,0 +1,54 @@
+<section class="content" style="padding-top:30px">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Danh sách lượt thích
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/likes/create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Thêm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Người đăng</th>
+                        <th>Lượt thích cho bài đăng</th>
+                        <th>Lượt thích cho bình luận</th>
+                        <th>Loại</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% likes.forEach(function(like) { %>
+                        <tr>
+                            <td><%= like.user_id ? like.user_id.username : 'N/A' %></td>
+                            <td><%= like.post_id ? like.post_id.title : 'N/A' %></td>
+                            <td><%= like.comment_id ? like.comment_id.content : 'N/A' %></td>
+                            <td><%= like.type %></td>
+                            <td>
+                                <a href="/admin/likes/edit/<%= like._id %>" class="btn btn-warning btn-sm btn-action">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/admin/likes/details/<%= like._id %>" class="btn btn-info btn-sm btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <a href="/admin/likes/delete/<%= like._id %>" class="btn btn-danger btn-sm btn-action">
+                                    <i class="fas fa-trash-alt"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

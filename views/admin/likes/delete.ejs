@@ -1,0 +1,74 @@
+<section class="content" style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Xóa lượt thích
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/likes" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-9">
+                    <h4 class="text-primary">Thông tin lượt thích</h4>
+                    <dl class="row">
+                        <dt class="col-sm-3">
+                            Mã lượt thích:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= like._id %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Người đăng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= like.user_id ? like.user_id.username : 'Không xác định' %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Loại:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= like.type === 'post' ? 'Bài đăng' : 'Bình luận' %>
+                        </dd>
+
+                        <% if (like.type === 'post') { %>
+                        <dt class="col-sm-3">
+                            Bài đăng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= like.post_id ? like.post_id.title : 'Không xác định' %>
+                        </dd>
+                        <% } else if (like.type === 'comment') { %>
+                        <dt class="col-sm-3">
+                            Bình luận:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= like.comment_id ? like.comment_id.content : 'Không xác định' %>
+                        </dd>
+                        <% } %>
+                    </dl>
+                </div>
+            </div>
+            <form action="/admin/likes/delete/<%= like.id %>" method="POST">
+                <p>Bạn có chắc chắn muốn xóa lượt thích này không?</p>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger custom-btn">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,88 @@
+<section class="content" style="padding-top:30px">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Chỉnh sửa lượt thích
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/likes" class="btn btn-secondary">
+                          <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="/admin/likes/edit/<%= like._id %>" method="POST">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="user_id">Người đăng:</label>
+                    <select class="form-control" name="user_id" required>
+                        <% users.forEach(function(user) { %>
+                            <option value="<%= user._id %>" 
+                                <%= like.user_id && like.user_id._id.toString() === user._id.toString() ? 'selected' : '' %>>
+                                <%= user.username %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>                
+                <div class="form-group" id="post-section" >
+                    <label class="control-label col-md-2" for="post_id">Lượt thích cho bài đăng:</label>
+                    <select class="form-control" name="post_id">
+                        <% posts.forEach(function(post) { %>
+                            <option value="<%= post._id %>" <%= (like.post_id && like.post_id.toString() === post._id.toString()) ? 'selected' : '' %>><%= post.title %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group" id="comment-section">
+                    <label class="control-label col-md-2" for="comment_id">Lượt thích cho bình luận:</label>
+                    <select class="form-control" name="comment_id">
+                        <% comments.forEach(function(comment) { %>
+                            <option value="<%= comment._id %>" <%= (like.comment_id && like.comment_id.toString() === comment._id.toString()) ? 'selected' : '' %>><%= comment.content %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="type">Loại (Comment hay Post):</label>
+                    <select class="form-control" name="type" id="type" required>
+                        <option value="comment" <%= like.type === 'comment' ? 'selected' : '' %>>Comment</option>
+                        <option value="post" <%= like.type === 'post' ? 'selected' : '' %>>Post</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" class="btn btn-primary custom-btn">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('type');
+        const postSection = document.getElementById('post-section');
+        const commentSection = document.getElementById('comment-section');
+
+        function toggleSections() {
+            if (typeSelect.value === 'post') {
+                postSection.style.display = 'block';
+                commentSection.style.display = 'none';
+            } else if (typeSelect.value === 'comment') {
+                postSection.style.display = 'none';
+                commentSection.style.display = 'block';
+            }
+        }
+
+        typeSelect.addEventListener('change', toggleSections);
+
+        // Initial call to set the correct visibility based on the initial value
+        toggleSections();
+    });
+</script>
