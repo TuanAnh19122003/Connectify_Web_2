@@ -5,12 +5,12 @@
             <div class="row">
                 <div class="col-6">
                     <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
-                        Tạo bài đăng
+                        Thêm thông báo
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="d-flex justify-content-end align-items-center">
-                        <a href="/admin/posts" class="btn btn-secondary">
+                        <a href="/admin/notifications" class="btn btn-secondary">
                           <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -18,10 +18,10 @@
             </div>
         </div>
         <div class="card-body">
-            <form action="/admin/posts/create" method="POST" enctype="multipart/form-data">
+            <form action="/admin/notifications/create" method="POST">
                 <div class="form-group">
-                    <label class="control-label col-md-2" for="username">Người dùng:</label>
-                    <select class="form-control" name="username" required>
+                    <label class="control-label col-md-2" for="user_id">Người dùng:</label>
+                    <select class="form-control" name="user_id" required>
                         <option value="" disabled selected>Hãy chọn người dùng</option>
                         <% users.forEach(function(user) { %>
                             <option value="<%= user._id %>"><%= user.username %></option>
@@ -29,20 +29,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label  class="control-label col-md-2" for="title">Tiêu đề:</label>
-                    <input type="text" class="form-control" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label  class="control-label col-md-2" for="content">Nội dung bài đăng:</label>
-                    <textarea class="form-control" name="content" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label  class="control-label col-md-2" for="like_count">Số lượt thích:</label>
-                    <input type="number" class="form-control" name="like_count" required>
-                </div>
-                <div class="form-group">
-                    <label for="image">Ảnh bài đăng:</label>
-                    <input type="file" class="form-control-file" name="images" accept="image/*" multiple>
+                    <label class="control-label col-md-2" for="message">Nội dung thông báo:</label>
+                    <textarea class="form-control" value=" Nhập nội dung:a,b,c,... " name="message" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">

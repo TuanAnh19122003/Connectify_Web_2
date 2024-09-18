@@ -1,0 +1,52 @@
+
+<section class="content"  style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Cập nhật vai trò
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/notifications" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="/admin/notifications/edit/<%= notification._id %>" method="POST">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="user_id">Người dùng:</label>
+                    <select class="form-control" name="user_id" required>
+                        <% users.forEach(function(user) { %>
+                            <option value="<%= user._id %>" <%= notification.user_id.equals(user._id) ? 'selected' : '' %>><%= user.username %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="message">Nội dung thông báo:</label>
+                    <textarea class="form-control" name="message" rows="4" required><%= notification.message %></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="read">Trạng thái:</label>
+                    <select class="form-control" name="read" required>
+                        <option value="false" <%= !notification.read ? 'selected' : '' %>>Chưa đọc</option>
+                        <option value="true" <%= notification.read ? 'selected' : '' %>>Đã đọc</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" class="btn btn-default">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

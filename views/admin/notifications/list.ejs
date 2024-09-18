@@ -5,12 +5,12 @@
             <div class="row">
                 <div class="col-6">
                     <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
-                        Danh sách bình luận
+                        Danh sách thông báo
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="d-flex justify-content-end align-items-center">
-                        <a href="/admin/comments/create" class="btn btn-success">
+                        <a href="/admin/notifications/create" class="btn btn-success">
                             <i class="fas fa-plus"></i> Thêm
                         </a>
                     </div>
@@ -22,28 +22,34 @@
             <table class="table table-bordered">
                 <thead class="thead-light">
                     <tr>
-                        <th>Người bình luận</th>
-                        <th>Bình luận ở bài đăng</th>
-                        <th>Nội dung</th>
-                        <th>Số lượt thích</th>
+                        <th>Mã thông báo</th>
+                        <th>Người dùng</th>
+                        <th>Nội dung thông báo</th>
+                        <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% comments.forEach(function(comment) { %>
+                    <% notifications.forEach(function(notification) { %>
                         <tr>
-                            <td><%= comment.user_id ? comment.user_id.username : 'Không xác định' %></td>
-                            <td><%= comment.post_id ? comment.post_id.title : 'Không xác định' %></td>
-                            <td><%= comment.content %></td>
-                            <td><%= comment.like_count %></td>
+                            <td><%= notification._id %></td>
+                            <td><%= notification.user_id ? notification.user_id.username : 'Không xác định' %></td>
+                            <td style="width: 350px; height: 50px;"><%= notification.message %></td>
                             <td>
-                                <a href="/admin/comments/edit/<%= comment._id %>" class="btn btn-warning btn-sm btn-action">
+                                <% if (notification.read) { %>
+                                    Đã đọc
+                                  <% } else { %>
+                                    Chưa đọc
+                                  <% } %>
+                            </td>
+                            <td>
+                                <a href="/admin/notifications/edit/<%= notification._id %>" class="btn btn-warning btn-sm btn-action">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <a href="/admin/comments/details/<%= comment._id %>" class="btn btn-info btn-sm btn-action">
+                                <a href="/admin/notifications/details/<%= notification._id %>" class="btn btn-info btn-sm btn-action">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </a>
-                                <a href="/admin/comments/delete/<%= comment._id %>" class="btn btn-danger btn-sm btn-action">
+                                <a href="/admin/notifications/delete/<%= notification._id %>" class="btn btn-danger btn-sm btn-action">
                                     <i class="fas fa-trash-alt"></i> Xóa
                                 </a>
                             </td>

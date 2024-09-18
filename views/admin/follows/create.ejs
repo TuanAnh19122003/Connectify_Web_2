@@ -22,6 +22,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-8" for="follower_id">Người dùng thực hiện theo dõi: </label>
                     <select class="form-control" name="follower_id" required>
+                        <option value="" disabled selected>Hãy chọn người dùng thực hiện theo dõi</option>
                         <% users.forEach(function(user) { %>
                             <option value="<%= user._id %>"><%= user.username %></option>
                         <% }); %>
@@ -30,6 +31,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-8" for="following_id">Người dùng được theo dõi</label>
                     <select class="form-control" name="following_id" required>
+                        <option value="" disabled selected>Hãy chọn người dùng được theo dõi</option>
                         <% users.forEach(function(user) { %>
                             <option value="<%= user._id %>"><%= user.username %></option>
                         <% }); %>

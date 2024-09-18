@@ -31,6 +31,7 @@
                 <div class="form-group" id="post-section">
                     <label class="control-label col-md-2" for="post_id">Lượt thích cho bài đăng:</label>
                     <select class="form-control" name="post_id">
+                        <option value="" disabled selected>Hãy chọn bài đăng</option>
                         <% posts.forEach(function(post) { %>
                             <option value="<%= post._id %>"><%= post.title %></option>
                         <% }); %>
@@ -39,6 +40,7 @@
                 <div class="form-group" id="comment-section">
                     <label class="control-label col-md-2" for="comment_id">Lượt thích cho bình luận:</label>
                     <select class="form-control" name="comment_id">
+                        <option value="" disabled selected>Hãy chọn bình luận</option>
                         <% comments.forEach(function(comment) { %>
                             <option value="<%= comment._id %>"><%= comment.content %></option>
                         <% }); %>

@@ -22,6 +22,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-2" for="user_id">Người dùng:</label>
                     <select class="form-control" name="user_id" required>
+                        <option value="" disabled selected>Hãy chọn người dùng</option>
                         <% users.forEach(function(user) { %>
                             <option value="<%= user._id %>"><%= user.username %></option>
                         <% }); %>
@@ -30,6 +31,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-2" for="role_id">Vai trò:</label>
                     <select class="form-control" name="role_id" required>
+                        <option value="" disabled selected>Hãy chọn vai trò</option>
                         <% roles.forEach(function(role) { %>
                             <option value="<%= role._id %>"><%= role.name %></option>
                         <% }); %>

@@ -102,16 +102,7 @@ router.post('/edit/:id', async (req, res) => {
     }
 });
 
-// Xóa UserRole
-router.delete('/:id', async (req, res) => {
-    try {
-        const userRole = await UserRole.findByIdAndDelete(req.params.id);
-        if (!userRole) return res.status(404).json({ message: 'UserRole not found' });
-        res.json({ message: 'UserRole deleted' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+
 // Xóa vai trò
 router.get('/delete/:id', async (req, res) => {
     try {
