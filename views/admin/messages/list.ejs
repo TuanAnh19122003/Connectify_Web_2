@@ -1,0 +1,54 @@
+<section class="content"  style="padding-top:30px"></section>
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Danh sách tin nhắn
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/messages/create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Thêm
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Mã người gửi tin nhắn</th>
+                        <th>Mã người nhận tin nhắn</th>
+                        <th>Nội dung tin nhắn</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% messages.forEach(function(message) { %>
+                        <tr>
+                            <td><%= message.sender_id ? message.sender_id.username : 'Không xác định' %></td>
+                            <td><%= message.receiver_id ? message.receiver_id.username : 'Không xác định' %></td>
+                            <td style="width: 350px; height: 50px;"><%= message.content %></td>
+                            <td>
+                                <a href="/admin/messages/edit/<%= message._id %>" class="btn btn-warning btn-sm btn-action">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/admin/messages/details/<%= message._id %>" class="btn btn-info btn-sm btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <a href="/admin/messages/delete/<%= message._id %>" class="btn btn-danger btn-sm btn-action">
+                                    <i class="fas fa-trash-alt"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

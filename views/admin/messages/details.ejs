@@ -1,0 +1,59 @@
+<section class="content" style="padding-top:30px">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-primary text-uppercase">
+                        Chi Tiết tin nhắn
+                    </div>
+                </div>
+                <div class="col-6 text-right">
+                    <a href="/admin/messages/edit/<%= message._id %>" class="btn btn-warning mr-2">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="/admin/messages" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h4 class="text-primary">Thông tin tin nhắn</h4>
+            <dl class="row">
+                <dt class="col-sm-3">
+                    Mã tin nhắn:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= message._id %>
+                </dd>
+                <dt class="col-sm-3">
+                    Người gửi:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= message.sender_id.username %>
+                </dd>
+                
+                <dt class="col-sm-3">
+                    Người nhận:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= message.receiver_id.username %>
+                </dd>
+
+                <dt class="col-sm-3">
+                    Nội dung tin nhắn:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= message.content %>
+                </dd>
+
+                <dt class="col-sm-3">
+                    Ngày gửi:
+                </dt>
+                <dd class="col-sm-9">
+                    <%= formatDate(message.created_at) %>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</section>
