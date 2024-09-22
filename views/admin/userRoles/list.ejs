@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="../../../stylesheets/pagination.css">
+</head>
 <section class="content"  style="padding-top:30px"></section>
     <!-- Default box -->
     <div class="card">
@@ -49,6 +52,7 @@
                     <% }); %>
                 </tbody>
             </table>
+            <%- include('../layouts/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
         </div>
     </div>
 </section>

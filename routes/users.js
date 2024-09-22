@@ -41,9 +41,19 @@ router.post('/update-status/:id', async (req, res) => {
 
 // Lấy tất cả người dùng
 router.get('/',async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
     try {
-        const users = await User.find();
-        res.render('admin/users/list', { users });
+        const users = await User.find().skip(skip).limit(limit);
+        const totalUsers = await User.countDocuments(); // Tổng số người dùng
+        const totalPages = Math.ceil(totalUsers / limit); // Tổng số trang
+
+        res.render('admin/users/list', {
+            users,
+            currentPage: page,
+            totalPages
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

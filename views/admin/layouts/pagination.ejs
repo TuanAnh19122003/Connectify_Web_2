@@ -1,0 +1,29 @@
+<nav>
+    <ul class="pagination justify-content-center">
+        <li>
+            <a href="?page=1" class="page-link" <% if (currentPage === 1) { %>disabled<% } %> aria-label="First">
+                <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+        </li>
+        <li>
+            <a href="?page=<%= currentPage - 1 %>" class="page-link" <% if (currentPage === 1) { %>disabled<% } %> aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a href="?page=<%= i %>" class="page-link"><%= i %></a>
+            </li>
+        <% } %>
+        <li>
+            <a href="?page=<%= currentPage + 1 %>" class="page-link" <% if (currentPage === totalPages) { %>disabled<% } %> aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        <li>
+            <a href="?page=<%= totalPages %>" class="page-link" <% if (currentPage === totalPages) { %>disabled<% } %> aria-label="Last">
+                <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

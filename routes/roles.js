@@ -4,9 +4,21 @@ const Role = require('../models/Role');
 
 // Lấy tất cả vai trò
 router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
+
     try {
-        const roles = await Role.find();
-        res.render('admin/roles/list', { roles });
+        const roles = await Role.find()
+        .skip(skip).limit(limit);
+        const totalUsers = await Role.countDocuments();
+        const totalPages = Math.ceil(totalUsers / limit); // Tổng số trang
+
+        res.render('admin/roles/list', { 
+            roles,
+            currentPage: page,
+            totalPages 
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

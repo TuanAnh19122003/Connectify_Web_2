@@ -6,6 +6,10 @@ const Role = require('../models/Role');
 
 // Lấy tất cả UserRoles
 router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
+
     try {
         const userRoles = await UserRole.find()
             .populate({
@@ -17,9 +21,15 @@ router.get('/', async (req, res) => {
                 path: 'role_id',
                 select: 'name',
                 options: { strictPopulate: false }
-            });
+            }).skip(skip).limit(limit);
+            const totalUsers = await UserRole.countDocuments();
+            const totalPages = Math.ceil(totalUsers / limit);
 
-        res.render('admin/userRoles/list', { userRoles });
+        res.render('admin/userRoles/list', { 
+            userRoles,
+            currentPage: page,
+            totalPages 
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

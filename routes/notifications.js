@@ -6,15 +6,25 @@ const { format } = require('date-fns');
 
 // Lấy tất cả thông báo
 router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
+
     try {
         const notifications = await Notification.find()
             .populate({
                 path: 'user_id',
                 select: 'username',
                 options: { strictPopulate: false }
-            })
+            }).skip(skip).limit(limit);
+            const totalUsers = await Notification.countDocuments();
+            const totalPages = Math.ceil(totalUsers / limit); // Tổng số trang
 
-        res.render('admin/notifications/list', { notifications });
+        res.render('admin/notifications/list', { 
+            notifications,
+            currentPage: page,
+            totalPages   
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

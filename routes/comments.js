@@ -6,6 +6,9 @@ const User = require('../models/User');
 
 // Lấy tất cả bình luận
 router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
     try {
         const comments = await Comment.find()
             .populate({
@@ -17,8 +20,15 @@ router.get('/', async (req, res) => {
                 path: 'post_id',
                 select: 'title',
                 options: { strictPopulate: false }
-            })
-        res.render('admin/comments/list', { comments });
+            }).skip(skip).limit(limit);
+            const totalUsers = await Comment.countDocuments(); // Tổng số người dùng
+            const totalPages = Math.ceil(totalUsers / limit); // Tổng số trang
+
+        res.render('admin/comments/list', { 
+            comments,
+            currentPage: page,
+            totalPages 
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

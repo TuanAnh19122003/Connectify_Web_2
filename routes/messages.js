@@ -4,6 +4,9 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 
 router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
     try {
         const messages = await Message.find()
             .populate({
@@ -15,8 +18,15 @@ router.get('/', async (req, res) => {
                 path: 'receiver_id',
                 select: 'username',
                 options: { strictPopulate: false }
-            })
-        res.render('admin/messages/list', { messages });
+            }).skip(skip).limit(limit);
+            const totalUsers = await Message.countDocuments();
+            const totalPages = Math.ceil(totalUsers / limit); // Tổng số trang
+
+        res.render('admin/messages/list', { 
+            messages,
+            currentPage: page,
+            totalPages  
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
