@@ -1,12 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const Friendship = require('../models/Friendship');
+const User = require('../models/User');
+
 
 // Lấy tất cả mối quan hệ bạn bè
 router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+    const limit = 5; // Số lượng dữ liệu mỗi trang
+    const skip = (page - 1) * limit; // Tính toán số lượng mục cần bỏ qua
+    
     try {
-        const friendships = await Friendship.find().populate('user_id').populate('friend_id');
-        res.json(friendships);
+        const friendships = await Friendship.find()
+        .populate({
+            path: 'user_id',
+            select: 'username',
+            options: { strictPopulate: false }
+        })
+        .populate({
+            path: 'friend_id',
+            select: 'username',
+            options: { strictPopulate: false }
+        }).skip(skip).limit(limit);
+        const totalUsers = await Friendship.countDocuments();
+        const totalPages = Math.ceil(totalUsers / limit); // Tổng số trang
+        res.render('admin/friendships/list', { 
+            friendships,
+            currentPage: page,
+            totalPages 
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

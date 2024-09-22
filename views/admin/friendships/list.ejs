@@ -1,0 +1,59 @@
+<head>
+    <link rel="stylesheet" href="../../../stylesheets/pagination.css">
+</head>
+<section class="content"  style="padding-top:30px"></section>
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
+                        Danh sách các mối quan hệ
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="/admin/friendships/create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Thêm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Mã người dùng</th>
+                        <th>Mã người bạn của người dùng</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% friendships.forEach(function(friendship) { %>
+                        <tr>
+                            <td><%= friendship._id %></td>
+                            <td><%= friendship.user_id ? friendship.user_id.username : 'Không xác định' %></td>
+                            <td><%= friendship.friend_id ? friendship.friend_id.username : 'Không xác định' %></td>
+                            <td><%= friendship.status %></td>
+                            <td>
+                                <a href="/admin/friendships/edit/<%= friendship._id %>" class="btn btn-warning btn-sm btn-action">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/admin/friendships/details/<%= friendship._id %>" class="btn btn-info btn-sm btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <a href="/admin/friendships/delete/<%= friendship._id %>" class="btn btn-danger btn-sm btn-action">
+                                    <i class="fas fa-trash-alt"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <%- include('../layouts/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
+        </div>
+    </div>
+</section>
