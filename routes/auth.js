@@ -86,17 +86,6 @@ router.post('/login', async (req, res) => {
 });
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Tạo tên duy nhất cho ảnh
-    }
-});
-
-const upload = multer({ storage: storage });
-
 
 // Hiển thị trang đăng ký
 router.get('/register', (req, res) => {
@@ -104,13 +93,11 @@ router.get('/register', (req, res) => {
         error: null, // Có thể thêm thông báo lỗi nếu có
         username: '', 
         email: '', 
-        profile_picture: '', 
     });
 });
 
-router.post('/register', upload.single('profile_picture'), async (req, res) => {
+router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
-    const profile_picture = req.file ? 'uploads/' + req.file.filename : '';
 
     try {
         const existingUser = await User.findOne({ email });
@@ -120,16 +107,24 @@ router.post('/register', upload.single('profile_picture'), async (req, res) => {
                 username,
                 email
             });
-        }
+        }  
+
         const user = new User({
             username,
             email,
-            password,  // Đảm bảo rằng bạn lưu chuỗi đã mã hóa
-            profile_picture,
+            password
         });
-        
         console.log('Mật khẩu đã mã hóa (lưu vào DB):', user.password);
         await user.save();
+
+        const userRole = new UserRole({
+            user_id: user._id,
+            role_id: '66e56ceac8884c4408778226' 
+        });
+        //console.log('Đối tượng userRole:', userRole);
+        await userRole.save();
+        //console.log('Lưu thành công phân quyền cho người dùng:', userRole);
+
         res.redirect('/auth/login');
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -137,7 +132,6 @@ router.post('/register', upload.single('profile_picture'), async (req, res) => {
 });
 
 const nodemailer = require('nodemailer');
-
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',

@@ -34,7 +34,7 @@
                             <td><%= user.username %></td>
                             <td><%= user.email %></td>
                             <td>
-                                <img src="/<%= user.profile_picture %>" alt="Profile Picture" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img src="/<%= user.profile_picture ? user.profile_picture : 'uploads/default.jpg' %>" alt="Profile Picture" style="width: 50px; height: 50px; object-fit: cover;">
                             </td>
                             
                             <td>
