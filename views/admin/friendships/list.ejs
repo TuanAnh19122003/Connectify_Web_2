@@ -37,7 +37,15 @@
                             <td><%= friendship._id %></td>
                             <td><%= friendship.user_id ? friendship.user_id.username : 'Không xác định' %></td>
                             <td><%= friendship.friend_id ? friendship.friend_id.username : 'Không xác định' %></td>
-                            <td><%= friendship.status %></td>
+                            <td>
+                                <% if (friendship.status === 'pending') { %>
+                                    Đang chờ
+                                <% } else if (friendship.status === 'accepted') { %>
+                                    Đã đồng ý
+                                <% } else if (friendship.status === 'rejected') { %>
+                                    Từ chối
+                                <% } %>
+                            </td>
                             <td>
                                 <a href="/admin/friendships/edit/<%= friendship._id %>" class="btn btn-warning btn-sm btn-action">
                                     <i class="fas fa-edit"></i> Sửa

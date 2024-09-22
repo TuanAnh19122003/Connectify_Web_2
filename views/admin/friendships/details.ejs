@@ -1,0 +1,59 @@
+<section class="content" style="padding-top:30px">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6 text-end text-danger text-uppercase">
+                    <div class="d-flex justify-content-start align-items-center text-primary text-uppercase">
+                        Chi tiết bạn bè
+                    </div>
+                </div>
+                <div class="col-6 text-right">
+                    <a href="/admin/friendships/edit/<%= friendship._id %>" class="btn btn-warning mr-2">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="/admin/friendships" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-15">
+                    <h4 class="text-primary">Thông tin friendships</h4>
+                    <dl class="row">
+                        <dt class="col-sm-3">
+                            ID:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= friendship._id %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Người dùng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= friendship.user_id ? friendship.user_id.username : 'Không xác định' %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Người bạn của người dùng:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= friendship.friend_id ? friendship.friend_id.username : 'Không xác định' %>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Ngày tạo:
+                        </dt>
+                        <dd class="col-sm-9">
+                            <%= formatDate(friendship.created_at) %>
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
