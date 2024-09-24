@@ -5,7 +5,7 @@ const checkRole = (requiredRole) => {
     return async (req, res, next) => {
         try {
             if (!req.session.user) {
-                return res.status(401).send('Bạn cần đăng nhập');
+                return res.redirect('/auth/login');
             }
 
             // Tìm phân quyền của người dùng đang đăng nhập

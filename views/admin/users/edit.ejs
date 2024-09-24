@@ -1,5 +1,4 @@
-
-<section class="content"  style="padding-top:30px">
+<section class="content" style="padding-top:30px">
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
@@ -21,36 +20,63 @@
         <div class="card-body">
             <form action="/admin/users/edit/<%= user._id %>" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label  class="control-label col-md-2" for="username">Họ và tên:</label>
+                    <label class="control-label col-md-2" for="username">Họ và tên:</label>
                     <input type="text" class="form-control" name="username" value="<%= user.username %>" required>
                 </div>
                 <div class="form-group">
-                    <label  class="control-label col-md-2" for="email">Email:</label>
+                    <label class="control-label col-md-2" for="email">Email:</label>
                     <input type="email" class="form-control" name="email" value="<%= user.email %>" required>
                 </div>
-                <div class="form-group">
-                    <label  class="control-label col-md-2" for="password">Mật khẩu:</label>
+                <!-- <div class="form-group">
+                    <label class="control-label col-md-2" for="password">Mật khẩu:</label>
                     <input type="password" class="form-control" name="password" value="<%= user.password %>" required>
-                </div>
+                </div> -->
                 <div class="form-group">
-                    <label for="profile_picture">Ảnh sản phẩm:</label>
+                    <label class="control-label col-md-2" for="password">Mật khẩu:</label>
+                    <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu mới (nếu có)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile_picture">Ảnh hồ sơ:</label>
                     <input type="file" class="form-control-file" name="profile_picture" accept="image/*">
                     <% if (user.profile_picture) { %>
                         <img src="/<%= user.profile_picture %>" alt="<%= user.username %>" class="img-fluid mt-2" style="max-width: 200px;">
                     <% } %>
                 </div>
                 <div class="form-group">
+                    <label class="control-label col-md-2" for="phone_number">Số điện thoại:</label>
+                    <input type="text" class="form-control" name="phone_number" value="<%= user.phone_number %>" required pattern="[0-9]{10,15}" title="Vui lòng nhập số điện thoại hợp lệ từ 10 đến 15 chữ số.">
+                    <small class="form-text text-muted">Vui lòng nhập số điện thoại hợp lệ (10-15 chữ số).</small>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="gender">Giới tính:</label>
+                    <select name="gender" class="form-control" required>
+                        <option value="" disabled>Chọn giới tính</option>
+                        <option value="male" <%= user.gender === 'male' ? 'selected' : '' %>>Nam</option>
+                        <option value="female" <%= user.gender === 'female' ? 'selected' : '' %>>Nữ</option>
+                        <option value="other" <%= user.gender === 'other' ? 'selected' : '' %>>Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="date_of_birth">Ngày sinh:</label>
+                    <input type="date" class="form-control" name="date_of_birth" value="<%= user.date_of_birth ? user.date_of_birth.toISOString().split('T')[0] : '' %>">
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="address">Địa chỉ:</label>
+                    <input type="text" class="form-control" name="address" value="<%= user.address %>">
+                </div>
+                
+                <div class="form-group">
                     <label class="control-label col-md-2" for="status">Trạng thái:</label>
                     <select class="form-control" name="status" required>
                         <option value="active" <%= user.status === 'active' ? 'selected' : '' %>>Active</option>
                         <option value="blocked" <%= user.status === 'blocked' ? 'selected' : '' %>>Blocked</option>
                     </select>
-                </div>                
+                </div>
                 <div class="form-group">
                     <label class="control-label col-md-2" for="bio">Giới thiệu:</label>
                     <textarea class="form-control" name="bio" rows="4" required><%= user.bio %></textarea>
                 </div>
-                
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <button type="submit" class="btn btn-default">

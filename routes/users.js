@@ -88,7 +88,11 @@ router.post('/create', upload.single('profile_picture'), async (req, res) => {
             email: req.body.email,
             password: hashedPassword, // Sử dụng mật khẩu đã mã hóa
             profile_picture: req.file ? `uploads/${req.file.filename}` : null,
-            bio: req.body.bio
+            bio: req.body.bio,
+            phone_number: req.body.phone_number, // Thêm trường số điện thoại
+            date_of_birth: req.body.date_of_birth ? new Date(req.body.date_of_birth) : null, // Thêm trường ngày sinh
+            gender: req.body.gender, // Thêm trường giới tính
+            address: req.body.address // Thêm trường địa chỉ
         });
 
         await user.save();
@@ -112,15 +116,16 @@ router.get('/edit/:id' ,async (req, res) => {
 // Cập nhật người dùng
 router.post('/edit/:id', upload.single('profile_picture'), async (req, res) => {
     try {
-        // Mã hóa mật khẩu nếu có
-        const hashedPassword = req.body.password ? await bcrypt.hash(req.body.password, saltRounds) : null;
-
         // Tạo đối tượng cập nhật
         const updates = {
             username: req.body.username,
             email: req.body.email,
             bio: req.body.bio,
             status: req.body.status,
+            phone_number: req.body.phone_number,
+            date_of_birth: req.body.date_of_birth ? new Date(req.body.date_of_birth) : null,
+            gender: req.body.gender,
+            address: req.body.address,
             updated_at: Date.now()
         };
 
@@ -129,9 +134,9 @@ router.post('/edit/:id', upload.single('profile_picture'), async (req, res) => {
             updates.profile_picture = `uploads/${req.file.filename}`;
         }
 
-        // Nếu mật khẩu được cung cấp, cập nhật mật khẩu đã mã hóa
-        if (hashedPassword) {
-            updates.password = hashedPassword;
+        // Kiểm tra nếu mật khẩu mới được nhập, nếu không thì bỏ qua
+        if (req.body.password && req.body.password.trim() !== '') {
+            updates.password = await bcrypt.hash(req.body.password, saltRounds);
         }
 
         // Cập nhật người dùng
@@ -141,9 +146,11 @@ router.post('/edit/:id', upload.single('profile_picture'), async (req, res) => {
         // Điều hướng đến danh sách người dùng sau khi cập nhật
         res.redirect('/admin/users');
     } catch (error) {
+        console.error(error); // In ra lỗi nếu có
         res.status(400).json({ message: error.message });
     }
 });
+
 
 router.get('/delete/:id', async (req, res) => {
     try {

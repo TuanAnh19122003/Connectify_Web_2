@@ -23,62 +23,29 @@
                 <div class="col-md-10">
                     <h4 class="text-primary">Thông tin người dùng</h4>
                     <dl class="row">
-                        <dt class="col-sm-3">
-                            Ảnh người dùng:
-                        </dt>
+                        <dt class="col-sm-3">Ảnh người dùng:</dt>
                         <dd class="col-sm-9">
                             <% if (user.profile_picture) { %>
-                                <img src="/<%= user.profile_picture %>" alt="<%= user.name %>" style="width: 250px; height: auto; object-fit: cover;">
+                                <img src="/<%= user.profile_picture %>" alt="<%= user.username %>" style="width: 250px; height: auto; object-fit: cover;">
                             <% } %>
                         </dd>
-
-                        <dt class="col-sm-3">
-                            Mã người dùng:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user._id %>
-                        </dd>
-
-                        <dt class="col-sm-3">
-                            Họ và tên:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.username %>
-                        </dd>
-                        <dt class="col-sm-3">
-                            Email:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.email %>
-                        </dd>
-                        <dt class="col-sm-3">
-                            Mật khẩu:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.password %>
-                        </dd>
-
+                        <dt class="col-sm-3">Mã người dùng:</dt>
+                        <dd class="col-sm-9"><%= user._id %></dd>
+                        <dt class="col-sm-3">Họ và tên:</dt>
+                        <dd class="col-sm-9"><%= user.username %></dd>
+                        <dt class="col-sm-3">Email:</dt>
+                        <dd class="col-sm-9"><%= user.email %></dd>
+                        <dt class="col-sm-3">Mật khẩu:</dt>
+                        <dd class="col-sm-9"><%= user.password %></dd>
                         <dt class="col-sm-3">Ngày tạo:</dt>
                         <dd class="col-sm-9"><%= formatDate(user.created_at) %></dd>
-
                         <dt class="col-sm-3">Lần cập nhật cuối:</dt>
                         <dd class="col-sm-9"><%= formatDate(user.updated_at) %></dd>
-
-                        <dt class="col-sm-3">
-                            Trạng thái:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.status %>
-                        </dd>
-
-                        <dt class="col-sm-3">
-                            Giới thiệu:
-                        </dt>
-                        <dd class="col-sm-9">
-                            <%= user.bio %>
-                        </dd>
+                        <dt class="col-sm-3">Trạng thái:</dt>
+                        <dd class="col-sm-9"><%= user.status %></dd>
+                        <dt class="col-sm-3">Giới thiệu:</dt>
+                        <dd class="col-sm-9"><%= user.bio %></dd>
                     </dl>
-                    
                 </div>
             </div>
         </div>

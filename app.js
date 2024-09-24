@@ -35,6 +35,7 @@ app.use((req, res, next) => {
     next();
 });
 
+
 // Kết nối với MongoDB
 mongoose.connect('mongodb://0.0.0.0:27017/Connectify_Web');
 
@@ -69,9 +70,13 @@ app.use(session({
 }));
 
 
-// Middleware để tự động truyền session user vào tất cả các view
+// Middleware truyền thông tin user vào tất cả các view
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+  if (req.session.user) {
+      res.locals.user = req.session.user;
+  } else {
+      res.locals.user = null;
+  }
   next();
 });
 

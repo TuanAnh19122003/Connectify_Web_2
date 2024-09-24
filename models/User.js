@@ -8,6 +8,10 @@ const userSchema = new Schema({
     password: { type: String, required: true }, // Sẽ được mã hóa trước khi lưu
     profile_picture: { type: String },
     bio: { type: String },
+    phone_number: { type: String }, // Thêm trường số điện thoại
+    date_of_birth: { type: Date }, // Thêm trường ngày sinh
+    gender: { type: String, enum: ['male', 'female', 'other'] }, // Thêm trường giới tính
+    address: { type: String }, // Thêm trường địa chỉ
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
     status: { type: String, enum: ['active', 'blocked'], default: 'active' },

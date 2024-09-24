@@ -1,17 +1,17 @@
-<section class="content"  style="padding-top:30px">
+<section class="content" style="padding-top:30px">
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
             <div class="row">
                 <div class="col-6">
                     <div class="d-flex justify-content-start align-items-center text-danger text-uppercase">
-                        Xóa vai trò
+                        Xóa người dùng
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="d-flex justify-content-end align-items-center">
                         <a href="/admin/users" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
+                            <i class="fas fa-arrow-left"></i> Quay lại
                         </a>
                     </div>
                 </div>
@@ -25,30 +25,25 @@
                         <img src="/<%= user.profile_picture %>" alt="<%= user.username %>" class="img-fluid mt-2" style="max-width: 200px;">
                     <% } %>
                 </dd>
-
                 <dt class="col-sm-3">Họ và tên:</dt>
                 <dd class="col-sm-9"><%= user.username %></dd>
-
                 <dt class="col-sm-3">Email:</dt>
                 <dd class="col-sm-9"><%= user.email %></dd>
-
                 <dt class="col-sm-3">Mật khẩu:</dt>
                 <dd class="col-sm-9"><%= user.password %></dd>
-
                 <dt class="col-sm-3">Trạng thái:</dt>
                 <dd class="col-sm-9"><%= user.status %></dd>
-
                 <dt class="col-sm-3">Giới thiệu:</dt>
                 <dd class="col-sm-9"><%= user.bio %></dd>
             </dl>                
-            <form action="/admin/users/delete/<%= user.id %>" method="POST" enctype="multipart/form-data">
-                <p>Bạn có muốn xóa thông tin tài khoản không ? </p>
+            <form action="/admin/users/delete/<%= user._id %>" method="POST" enctype="multipart/form-data">
+                <p>Bạn có muốn xóa thông tin tài khoản không?</p>
                 <div class="form-group">
-                  <button type="submit" class="btn btn-danger custom-btn">
-                    <i class="fas fa-trash"></i> Delete
-                  </button>
+                    <button type="submit" class="btn btn-danger custom-btn">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
                 </div>
             </form>
         </div>
     </div>
-  </section>
+</section>
