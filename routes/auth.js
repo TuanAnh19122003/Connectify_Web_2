@@ -66,17 +66,18 @@ router.post('/login', async (req, res) => {
         req.session.user = {
             id: user._id,
             email: user.email,
-            password : user.password,
+            password: user.password,
             name: user.username,
             profile_picture: user.profile_picture || '/images/default_profile.png',
-            bio:user.bio,
-            phone_number:user.phone_number,
-            date_of_birth:user.date_of_birth  ? format(new Date(user.date_of_birth), 'dd/MM/yyyy HH:mm:ss') : 'N/A',
-            gender:user.gender,
-            address:user.address,
+            bio: user.bio,
+            phone_number: user.phone_number,
+            date_of_birth: user.date_of_birth ? format(new Date(user.date_of_birth), 'dd/MM/yyyy') : 'N/A',
+            gender: user.gender,
+            address: user.address,
             created_at: user.created_at ? format(new Date(user.created_at), 'dd/MM/yyyy HH:mm:ss') : 'N/A',
             role: userRole.role_id.name
         };
+        
 
         if (userRole.role_id.name === 'Quản lý') {
             res.redirect('/admin');

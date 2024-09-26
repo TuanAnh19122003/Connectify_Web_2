@@ -44,6 +44,7 @@ router.use('/roles', rolesRouter);
 router.use('/userRoles', userRolesRouter);
 
 const User = require('../models/User');
+const Friendship = require('../models/Friendship');
 
 router.get('/about/:id', async (req, res) => {
     console.log('Requested User ID:', req.params.id); // Kiểm tra ID được yêu cầu
@@ -59,6 +60,26 @@ router.get('/about/:id', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal server error');
+    }
+});
+
+
+// Lấy danh sách bạn bè
+router.get('/friends', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/auth/login');
+        }
+
+        console.log('User ID:', req.session.user.id); // Kiểm tra ID người dùng
+
+        const friendships = await Friendship.find({ user_id: req.session.user.id, status: 'accepted' })
+            .populate('friend_id', 'username profile_picture');
+
+        res.json(friendships);
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
+        res.status(500).send('Có lỗi xảy ra');
     }
 });
 

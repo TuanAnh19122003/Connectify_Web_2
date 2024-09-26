@@ -140,4 +140,31 @@ router.post('/delete/:id', async (req, res) => {
     }
 });
 
+// Chấp nhận kết bạn
+// Ví dụ mã chấp nhận kết bạn
+router.post('/accept/:id', async (req, res) => {
+    try {
+        // Tìm mối quan hệ kết bạn của tài khoản A
+        const friendship = await Friendship.findById(req.params.id);
+        if (!friendship) return res.status(404).send('Friendship not found');
+
+        // Cập nhật trạng thái của mối quan hệ A-B
+        await Friendship.findByIdAndUpdate(req.params.id, { status: 'accepted' }, { new: true });
+
+        // Tạo một mối quan hệ mới cho B với A
+        const reverseFriendship = new Friendship({
+            user_id: friendship.friend_id,
+            friend_id: friendship.user_id,
+            status: 'accepted',
+            created_at: Date.now()
+        });
+        await reverseFriendship.save();
+
+        res.redirect('/friendships');
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 module.exports = router;
