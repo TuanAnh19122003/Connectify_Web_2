@@ -1,7 +1,7 @@
 const UserRole = require('../../../models/UserRole');
 
 // Middleware kiểm tra phân quyền
-const checkRole = (requiredRole) => {
+const checkRole = (requiredRoles) => {
     return async (req, res, next) => {
         try {
             if (!req.session.user) {
@@ -9,26 +9,31 @@ const checkRole = (requiredRole) => {
             }
 
             // Tìm phân quyền của người dùng đang đăng nhập
-            const userRole = await UserRole.findOne({ user_id: req.session.user.id })
-            .populate({
-                path: 'user_id',
-                select: 'username',
-                options: { strictPopulate: false }
-            })
-            .populate({
-                path: 'role_id',
-                select: 'name',
-                options: { strictPopulate: false }
-            });
+            const userRoles = await UserRole.find({ user_id: req.session.user.id })
+                .populate({
+                    path: 'user_id',
+                    select: 'username',
+                    options: { strictPopulate: false }
+                })
+                .populate({
+                    path: 'role_id',
+                    select: 'name',
+                    options: { strictPopulate: false }
+                });
 
-            // Debug thông tin userRole
-            console.log('Thông tin phân quyền:', userRole);
+            // Debug thông tin userRoles
+            console.log('Thông tin phân quyền:', userRoles);
 
-            if (!userRole) {
+            if (!userRoles || userRoles.length === 0) {
                 return res.status(403).send('Bạn không có quyền truy cập');
             }
 
-            if (userRole.role_id.name !== requiredRole) {
+            // Kiểm tra xem người dùng có vai trò nào trong danh sách vai trò cần thiết không
+            const hasAccess = userRoles.some(userRole => 
+                requiredRoles.includes(userRole.role_id.name)
+            );
+
+            if (!hasAccess) {
                 return res.status(403).send('Bạn không có quyền truy cập');
             }
 
@@ -39,6 +44,5 @@ const checkRole = (requiredRole) => {
         }
     };
 };
-
 
 module.exports = checkRole;

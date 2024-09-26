@@ -25,7 +25,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/', checkRole('Người dùng'), (req, res) => {
+router.get('/', checkRole(['Quản lý', 'Người dùng']), (req, res) => {
     console.log('Dữ liệu session:', req.session);
     res.render('user/pages/index', { content: 'Home' });
 });

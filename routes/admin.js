@@ -29,7 +29,7 @@ router.use((req, res, next) => {
 router.use(ensureAuthenticated);
 
 // Route trang admin
-router.get('/', checkRole('Quản lý'), (req, res) => {
+router.get('/', checkRole(['Quản lý']), (req, res) => {
     console.log('Dữ liệu session:', req.session);
     res.render('admin/dashboards/index');
 });
