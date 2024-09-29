@@ -1,4 +1,31 @@
+<style>
+    .list-unstyled li {
+        margin-bottom: 50px; /* Thay đổi giá trị này theo ý muốn */
+    }
+    .post-content {
+        position: relative; /* Đảm bảo rằng các phần tử bên trong được định vị đúng */
+    }
 
+    .post-meta {
+        margin-top: 10px; /* Tạo khoảng cách với nội dung phía trên */
+        padding: 10px 0; /* Tạo khoảng cách bên trong cho phần này */
+        border-top: 1px solid #e0e0e0; /* Tạo đường kẻ trên để phân tách */
+    }
+    .post-images img {
+        width: 100%; /* Đảm bảo ảnh có chiều rộng 100% của cột */
+        height: 200px; /* Giữ tỉ lệ ảnh */
+        overflow: auto;
+        border-radius: 5px; /* Bo góc ảnh */
+        transition: transform 0.2s; /* Hiệu ứng khi hover */
+    }
+
+    .post-images img:hover {
+        transform: scale(1.05); /* Tăng kích thước ảnh một chút khi hover */
+        filter: brightness(0.9); /* Thêm hiệu ứng làm tối khi hover */
+    }
+
+
+</style>
 <section>
     <div class="gap2 gray-bg">
         <div class="container">
@@ -211,276 +238,74 @@
                                     </div>
                                 </div>	
                             </div>
-                            <div class="central-meta">
-                                <span class="create-post">Favourit Movies & TV Shows (33) <a href="#" title="">See All</a></span>
+                            <div class="container mt-4">
                                 <div class="row">
-                                    <div class="col-lg-4 col-md-6 col-sm-6">
-                                        <div class="fav-play">
-                                            <figure>
-                                                <img src="/images/resources/tvplay1.jpg" alt="">
-                                            </figure>	
-                                            <span class="tv-play-title">Attaturk Tv Series 2017 </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-6">
-                                        <div class="fav-play">
-                                            <figure>
-                                                <img src="/images/resources/tvplay2.jpg" alt="">
-                                            </figure>	
-                                            <span class="tv-play-title">Thor Hollywood Movie 2017 </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-6">
-                                        <div class="fav-play">
-                                            <figure>
-                                                <img src="/images/resources/tvplay3.jpg" alt="">
-                                            </figure>	
-                                            <span class="tv-play-title">Spider Men 2015 </span>
+                                    <div class="col-md-12">
+                                        <div class="central-meta">
+                                            <span class="create-post">Bài đăng <a href="#" title="">See All</a></span>
+                                            <div class="post-list">
+                                                <% if (posts && posts.length > 0) { %>
+                                                    <% posts.forEach(post => { %>
+                                                        <div class="post-content" style="margin-bottom: 20px; border: 1px solid #e0e0e0; padding: 15px; border-radius: 5px;">
+                                                            <h5><%= post.title %></h5>
+                                                            <div class="post-meta d-flex justify-content-between">
+                                                                <p><%= post.content %></p>
+                                                                <span><i class="fa fa-clock"></i> <%= post.created_at.toLocaleString() %></span>
+                                                            </div>
+                                                            <% if (post.images && post.images.length > 0) { %>
+                                                                <div class="post-images row" style="margin-top: 10px;">
+                                                                    <% post.images.slice(0, 4).forEach((image, index) => { %> <!-- Hiển thị 4 ảnh đầu tiên -->
+                                                                        <div class="col-6" style="padding: 5px;">
+                                                                            <img src="/<%= image %>" alt="Post Image" class="img-fluid">
+                                                                        </div>
+                                                                    <% }) %>
+                                                                </div>
+                                                                <% if (post.images.length > 4) { %> <!-- Nếu có nhiều hơn 4 ảnh -->
+                                                                    <div class="more-images" style="display: none;">
+                                                                        <% post.images.slice(4).forEach(image => { %> <!-- Hiện ảnh từ ảnh thứ 5 trở đi -->
+                                                                            <img src="/<%= image %>" alt="Post Image" class="modal-image" style="display: none;">
+                                                                        <% }) %>
+                                                                    </div>
+                                                                    <span class="show-more" style="cursor: pointer; display: inline;">(+ <%= post.images.length - 4 %> more)</span>
+                                                                <% } %>
+                                                            <% } else { %>
+                                                                <div class="no-images" style="margin-top: 10px;">
+                                                                    <p>Không có ảnh nào trong bài đăng này.</p> <!-- Thông báo khi không có ảnh -->
+                                                                </div>
+                                                            <% } %>
+                                                            
+                                                            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="imageModalLabel">All Images</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="modal-images"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style="margin-top: 10px;padding: 10px 0;border-top: 1px solid #e0e0e0;"></div>
+                                                            <span><i class="fa fa-thumbs-up"></i> <%= post.like_count %> Thích</span>
+                                                            <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
+                                                        </div>
+                                                        
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    <div class="post-content">
+                                                        <p>Chưa có bài đăng nào.</p>
+                                                    </div>
+                                                <% } %>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="central-meta">
-                                <span class="create-post">Friend's (320) <a href="timeline-friends2.html" title="">See All</a></span>
-                                <ul class="frndz-list">
-                                    <li>
-                                        <img src="/images/resources/recent1.jpg" alt="">
-                                        <div class="sugtd-frnd-meta">
-                                            <a href="#" title="">Olivia</a>
-                                            <span>1 mutual friend</span>
-                                            <ul class="add-remove-frnd">
-                                                <li class="add-tofrndlist"><a class="send-mesg" href="#" title="Send Message"><i class="fa fa-commenting"></i></a></li>
-                                                <li class="remove-frnd"><a href="#" title="remove friend"><i class="fa fa-user-times"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img src="/images/resources/recent2.jpg" alt="">
-                                        <div class="sugtd-frnd-meta">
-                                            <a href="#" title="">Emma watson</a>
-                                            <span>2 mutual friend</span>
-                                            <ul class="add-remove-frnd">
-                                                <li class="add-tofrndlist"><a class="send-mesg" href="#" title="Send Message"><i class="fa fa-commenting"></i></a></li>
-                                                <li class="remove-frnd"><a href="#" title="remove friend"><i class="fa fa-user-times"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img src="/images/resources/recent3.jpg" alt="">
-                                        <div class="sugtd-frnd-meta">
-                                            <a href="#" title="">Isabella</a>
-                                            <span><a href="#" title="">Emmy</a> is mutual friend</span>
-                                            <ul class="add-remove-frnd">
-                                                <li class="add-tofrndlist"><a class="send-mesg" href="#" title="Send Message"><i class="fa fa-commenting"></i></a></li>
-                                                <li class="remove-frnd"><a href="#" title="remove friend"><i class="fa fa-user-times"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img src="/images/resources/recent4.jpg" alt="">
-                                        <div class="sugtd-frnd-meta">
-                                            <a href="#" title="">Amelia</a>
-                                            <span>5 mutual friend</span>
-                                            <ul class="add-remove-frnd">
-                                                <li class="add-tofrndlist"><a class="send-mesg" href="#" title="Send Message"><i class="fa fa-commenting"></i></a></li>
-                                                <li class="remove-frnd"><a href="#" title="remove friend"><i class="fa fa-user-times"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img src="/images/resources/recent5.jpg" alt="">
-                                        <div class="sugtd-frnd-meta">
-                                            <a href="#" title="">Sophia</a>
-                                            <span>1 mutual friend</span>
-                                            <ul class="add-remove-frnd">
-                                                <li class="add-tofrndlist"><a class="send-mesg" href="#" title="Send Message"><i class="fa fa-commenting"></i></a></li>
-                                                <li class="remove-frnd"><a href="#" title="remove friend"><i class="fa fa-user-times"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img src="/images/resources/recent6.jpg" alt="">
-                                        <div class="sugtd-frnd-meta">
-                                            <a href="#" title="">Amelia</a>
-                                            <span>3 mutual friend</span>
-                                            <ul class="add-remove-frnd">
-                                                <li class="add-tofrndlist"><a class="send-mesg" href="#" title="Send Message"><i class="fa fa-commenting"></i></a></li>
-                                                <li class="remove-frnd"><a href="#" title="remove friend"><i class="fa fa-user-times"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div><!-- friends list -->
-                            <div class="central-meta">
-                                <span class="create-post">Photos (580) <a href="timeline-photos.html" title="">See All</a></span>
-                                <ul class="photos-list">
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-22.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo2.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>15</span></div>
-                                                <span>20 hours ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-33.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo3.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>20</span></div>
-                                                <span>20 days ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-44.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo4.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>155</span></div>
-                                                <span>Yesterday</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-55.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo5.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>201</span></div>
-                                                <span>3 weeks ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-66.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo6.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>81</span></div>
-                                                <span>2 months ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-77.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo7.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>98</span></div>
-                                                <span>1 day</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a class="strip" href="/images/resources/photo-88.jpg" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-                                            <img src="/images/resources/photo8.jpg" alt=""></a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>87</span></div>
-                                                <span>23 hours ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="central-meta">
-                                <span class="create-post">Videos (33) <a href="timeline-videos.html" title="">See All</a></span>
-                                <ul class="videos-list">
-                                    <li>
-                                        <div class="item-box">
-                                            <a href="https://www.youtube.com/watch?v=fF382gwEnG8&amp;t=1s" title="" data-strip-group="mygroup" class="strip" data-strip-options="width: 700,height: 450,youtube: { autoplay: 1 }"><img src="/images/resources/vid-11.jpg" alt="">
-                                            <i>
-                                                <svg version="1.1" class="play" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50px" width="50px"
-                                                 viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                              <path class="stroke-solid" fill="none" stroke=""  d="M49.9,2.5C23.6,2.8,2.1,24.4,2.5,50.4C2.9,76.5,24.7,98,50.3,97.5c26.4-0.6,47.4-21.8,47.2-47.7
-                                                C97.3,23.7,75.7,2.3,49.9,2.5"/>
-                                              <path class="icon" fill="" d="M38,69c-1,0.5-1.8,0-1.8-1.1V32.1c0-1.1,0.8-1.6,1.8-1.1l34,18c1,0.5,1,1.4,0,1.9L38,69z"/>
-                                                </svg>
-                                            </i>
-                                            </a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>15</span></div>
-                                                <span>20 hours ago</span>
-                                            </div>
-                                        </div>	
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a href="https://www.youtube.com/watch?v=fF382gwEnG8&amp;t=1s" title="" data-strip-group="mygroup" class="strip" data-strip-options="width: 700,height: 450,youtube: { autoplay: 1 }"><img src="/images/resources/vid-12.jpg" alt="">
-                                            <i>
-                                                <svg version="1.1" class="play" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50px" width="50px"
-                                                 viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                                  <path class="stroke-solid" fill="none" stroke=""  d="M49.9,2.5C23.6,2.8,2.1,24.4,2.5,50.4C2.9,76.5,24.7,98,50.3,97.5c26.4-0.6,47.4-21.8,47.2-47.7
-                                                    C97.3,23.7,75.7,2.3,49.9,2.5"/>
-                                                  <path class="icon" fill="" d="M38,69c-1,0.5-1.8,0-1.8-1.1V32.1c0-1.1,0.8-1.6,1.8-1.1l34,18c1,0.5,1,1.4,0,1.9L38,69z"/>
-                                                    </svg>
-                                                </i>
-                                            </a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>20</span></div>
-                                                <span>20 hours ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a href="https://www.youtube.com/watch?v=fF382gwEnG8&amp;t=1s" title="" data-strip-group="mygroup" class="strip" data-strip-options="width: 700,height: 450,youtube: { autoplay: 1 }"><img src="/images/resources/vid-10.jpg" alt="">
-                                                <i>
-                                                    <svg version="1.1" class="play" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50px" width="50px"
-                                                     viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                                  <path class="stroke-solid" fill="none" stroke=""  d="M49.9,2.5C23.6,2.8,2.1,24.4,2.5,50.4C2.9,76.5,24.7,98,50.3,97.5c26.4-0.6,47.4-21.8,47.2-47.7
-                                                    C97.3,23.7,75.7,2.3,49.9,2.5"/>
-                                                  <path class="icon" fill="" d="M38,69c-1,0.5-1.8,0-1.8-1.1V32.1c0-1.1,0.8-1.6,1.8-1.1l34,18c1,0.5,1,1.4,0,1.9L38,69z"/>
-                                                    </svg>
-                                                </i>
-                                            </a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>49</span></div>
-                                                <span>20 days ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a href="https://www.youtube.com/watch?v=fF382gwEnG8&amp;t=1s" title="" data-strip-group="mygroup" class="strip" data-strip-options="width: 700,height: 450,youtube: { autoplay: 1 }"><img src="/images/resources/vid-9.jpg" alt="">
-                                                <i>
-                                                    <svg version="1.1" class="play" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50px" width="50px"
-                                                     viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                                  <path class="stroke-solid" fill="none" stroke=""  d="M49.9,2.5C23.6,2.8,2.1,24.4,2.5,50.4C2.9,76.5,24.7,98,50.3,97.5c26.4-0.6,47.4-21.8,47.2-47.7
-                                                    C97.3,23.7,75.7,2.3,49.9,2.5"/>
-                                                  <path class="icon" fill="" d="M38,69c-1,0.5-1.8,0-1.8-1.1V32.1c0-1.1,0.8-1.6,1.8-1.1l34,18c1,0.5,1,1.4,0,1.9L38,69z"/>
-                                                    </svg>
-                                                </i>
-                                            </a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>156</span></div>
-                                                <span>Yesterday</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="item-box">
-                                            <a href="https://www.youtube.com/watch?v=fF382gwEnG8&amp;t=1s" title="" data-strip-group="mygroup" class="strip" data-strip-options="width: 700,height: 450,youtube: { autoplay: 1 }"><img src="/images/resources/vid-6.jpg" alt="">
-                                                <i>
-                                                    <svg version="1.1" class="play" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50px" width="50px"
-                                                     viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                                  <path class="stroke-solid" fill="none" stroke=""  d="M49.9,2.5C23.6,2.8,2.1,24.4,2.5,50.4C2.9,76.5,24.7,98,50.3,97.5c26.4-0.6,47.4-21.8,47.2-47.7
-                                                    C97.3,23.7,75.7,2.3,49.9,2.5"/>
-                                                  <path class="icon" fill="" d="M38,69c-1,0.5-1.8,0-1.8-1.1V32.1c0-1.1,0.8-1.6,1.8-1.1l34,18c1,0.5,1,1.4,0,1.9L38,69z"/>
-                                                    </svg>
-                                                </i>
-                                            </a>
-                                            <div class="over-photo">
-                                                <div class="likes heart" title="Like/Dislike">❤ <span>202</span></div>
-                                                <span>3 weeks ago</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                                                              
                         </div>
                     </div>	
                 </div>
@@ -488,3 +313,29 @@
         </div>
     </div>	
 </section><!-- content -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const showMoreSpans = document.querySelectorAll('.show-more');
+
+        showMoreSpans.forEach(span => {
+            span.addEventListener('click', function () {
+                const moreImagesDiv = this.previousElementSibling; // Lấy div chứa các ảnh ẩn
+                const modalImagesDiv = document.querySelector('.modal-images');
+                modalImagesDiv.innerHTML = ''; // Xóa nội dung trước đó trong modal
+                
+                // Hiện các ảnh ẩn
+                moreImagesDiv.querySelectorAll('img').forEach(img => {
+                    img.style.display = 'block'; // hiện các ảnh trong modal
+                    const modalImg = document.createElement('img');
+                    modalImg.src = img.src;
+                    modalImg.classList.add('modal-image');
+                    modalImg.style.width = '100%'; // Chiều rộng đầy đủ
+                    modalImagesDiv.appendChild(modalImg);
+                });
+                
+                $('#imageModal').modal('show'); // Hiển thị modal
+            });
+        });
+    });
+
+</script>

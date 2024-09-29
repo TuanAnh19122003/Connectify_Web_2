@@ -188,5 +188,26 @@ router.post('/delete/:id', async (req, res) => {
     }
 });
 
+//Bài đăng cho người dùng
+router.post('/post', upload.array('images', 10), async (req, res) => {
+    console.log('Received data:', req.body);
+    console.log('Uploaded files:', req.files);
+    try {
+        const post = new Post({
+            user_id: req.session.user.id,
+            title: req.body.title,
+            content: req.body.content,
+            images: req.files.map(file => `uploads/${file.filename}`),
+            like_count: req.body.like_count || 0
+        });
+
+        await post.save();
+        res.redirect('/user');
+    } catch (error) {
+        console.error('Lỗi khi tạo bài viết:', error);
+        res.status(400).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;

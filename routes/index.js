@@ -1,5 +1,6 @@
 const express = require('express');
 const { format } = require('date-fns'); // Nếu bạn đang sử dụng date-fns
+const multer = require('multer');
 const router = express.Router();
 
 const usersRouter = require('./users');
@@ -45,6 +46,7 @@ router.use('/userRoles', userRolesRouter);
 
 const User = require('../models/User');
 const Friendship = require('../models/Friendship');
+const Post = require('../models/Post');
 
 router.get('/about/:id', async (req, res) => {
     console.log('Requested User ID:', req.params.id); // Kiểm tra ID được yêu cầu
@@ -56,7 +58,9 @@ router.get('/about/:id', async (req, res) => {
         user.created_at = user.created_at ? format(new Date(user.created_at), 'dd/MM/yyyy HH:mm:ss') : 'N/A';
         user.date_of_birth = user.date_of_birth ? format(new Date(user.date_of_birth), 'dd/MM/yyyy') : 'N/A';
 
-        res.render('user/pages/about', { user, loggedInUser: req.session.user }); // Truyền thông tin người dùng đã đăng nhập
+        const posts = await Post.find({ user_id: req.session.user.id }).sort({ created_at: -1 }); // Sắp xếp theo thời gian tạo
+
+        res.render('user/pages/about', { user, posts, loggedInUser: req.session.user }); // Truyền thông tin người dùng đã đăng nhập
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal server error');

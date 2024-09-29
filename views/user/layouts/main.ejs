@@ -693,9 +693,9 @@
                 <ul class="chat-users" id="chat-users">
                     <!-- Danh sách bạn bè sẽ được thêm vào đây -->
                 </ul>
-                <div class="chat-box show">
-                    <!-- Nội dung chat box -->
-                </div>
+                <!-- <div class="chat-box show">
+                     Nội dung chat box 
+                </div>-->
             </div>
         </div>
         
@@ -890,16 +890,7 @@
         <%- body %> <!-- Nội dung chính của từng trang sẽ được chèn vào đây -->
     </main>
     
-    <div class="bottombar">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<span class="copyright">© 2024 Connectify. All rights reserved.</span>
-					<i><img src="/images/credit-cards.png" alt=""></i>
-				</div>
-			</div>
-		</div>
-	</div>
+    
     <div class="side-panel">
 		<h4 class="panel-title">General Setting</h4>
 		<form method="post">
@@ -1145,6 +1136,16 @@
 			</div>
 		</div>
 	</div><!-- send message popup -->
+    <div class="bottombar">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<span class="copyright">© 2024 Connectify. All rights reserved.</span>
+					<i><img src="/images/credit-cards.png" alt=""></i>
+				</div>
+			</div>
+		</div>
+	</div>
     <div class="modal fade" id="img-comt">
 		<div class="modal-dialog">
 		  <div class="modal-content">
@@ -1369,7 +1370,7 @@
 		}	
 
 		});	
-        fetch('user/friends')
+        fetch('/user/friends')
             .then(response => response.json())
             .then(friends => {
                 const chatUsersContainer = document.getElementById('chat-users');
@@ -1378,7 +1379,7 @@
                     li.className = 'friend-item position-relative'; // Thêm lớp Bootstrap
                     li.innerHTML = `
                         <div class="friend-thumbnail">
-                            <img src="${friend.friend_id.profile_picture || '/images/default_profile.png'}" 
+                            <img src="/${friend.friend_id.profile_picture || '/images/default_profile.png'}" 
                                 alt="${friend.friend_id.username}" 
                                 class="rounded-circle img-fluid" 
                                 style="width: 40px; height: 40px;">

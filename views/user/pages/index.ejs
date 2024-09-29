@@ -250,65 +250,68 @@
                                         >
                                     </figure>
                                     <div class="newpst-input">
-                                        <form method="post">
-                                            <textarea rows="2" placeholder="Share some what you are thinking?"></textarea>
+                                        <form method="POST" action="user/posts/post" enctype="multipart/form-data">
+                                            
+                                            <input type="text" name="title" placeholder="Tiêu đề" required 
+                                                style="width: auto; 
+                                                       width: 100%; 
+                                                       margin-left: 7px; 
+                                                       border: none; 
+                                                       border-radius: 10px;"
+                                            />
+                                            <textarea name="content" rows="2" placeholder="Bạn đang nghĩ gì ?" required></textarea>
+                                            <div class="attachments">
+                                                <ul>
+                                                    <li>
+                                                        <span class="add-loc">
+                                                            <i class="fa fa-map-marker"></i>
+                                                        </span>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa fa-image"></i>
+                                                        <label class="fileContainer">
+                                                            <input type="file" name="images" multiple> <!-- Cho phép chọn nhiều ảnh -->
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa fa-video-camera"></i>
+                                                        <label class="fileContainer">
+                                                            <input type="file" name="videos">
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa fa-camera"></i>
+                                                        <label class="fileContainer">
+                                                            <input type="file" name="camera">
+                                                        </label>
+                                                    </li>
+                                                    <li class="preview-btn">
+                                                        <button class="post-btn-preview" type="button" data-ripple="">Preview</button>
+                                                    </li>
+                                                </ul>
+                                                <button class="post-btn" type="submit" data-ripple="">Post</button>
+                                            </div>
+                                            <div class="add-location-post">
+                                                <span>Drag map point to selected area</span>
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <label class="control-label">Lat :</label>
+                                                        <input type="text" class="" id="us3-lat" name="latitude" />
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <label>Long :</label>
+                                                        <input type="text" class="" id="us3-lon" name="longitude" />
+                                                    </div>
+                                                </div>
+                                                <!-- map -->
+                                                <div id="us3"></div>
+                                            </div>
                                         </form>
-                                    </div>
-                                    <div class="attachments">
-                                        <ul>
-                                            <li>
-                                                <span class="add-loc">
-                                                    <i class="fa fa-map-marker"></i>
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-music"></i>
-                                                <label class="fileContainer">
-                                                    <input type="file">
-                                                </label>
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-image"></i>
-                                                <label class="fileContainer">
-                                                    <input type="file">
-                                                </label>
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-video-camera"></i>
-                                                <label class="fileContainer">
-                                                    <input type="file">
-                                                </label>
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-camera"></i>
-                                                <label class="fileContainer">
-                                                    <input type="file">
-                                                </label>
-                                            </li>
-                                            <li class="preview-btn">
-                                                <button class="post-btn-preview" type="submit" data-ripple="">Preview</button>
-                                            </li>
-                                        </ul>
-                                        <button class="post-btn" type="submit" data-ripple="">Post</button>
-                                    </div>
-                                    <div class="add-location-post">
-                                        <span>Drag map point to selected area</span>
-                                        <div class="row">
-
-                                            <div class="col-lg-6">
-                                                  <label class="control-label">Lat :</label>
-                                                  <input type="text" class="" id="us3-lat" />
-                                            </div>
-                                            <div class="col-lg-6">
-                                                  <label>Long :</label>
-                                                  <input type="text" class="" id="us3-lon" />
-                                            </div>
-                                        </div>
-                                          <!-- map -->
-                                          <div id="us3"></div>
-                                    </div>
-                                </div>	
+                                    </div>	
+                                </div>
                             </div><!-- add post new box -->
+                            
+                            
                             <div class="central-meta">
                                 <span class="create-post">Recent Stories <a href="#" title="">See All</a></span>
                                 <div class="story-postbox">
