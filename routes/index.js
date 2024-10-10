@@ -49,7 +49,6 @@ const Friendship = require('../models/Friendship');
 const Post = require('../models/Post');
 
 router.get('/about/:id', async (req, res) => {
-    console.log('Requested User ID:', req.params.id); // Kiểm tra ID được yêu cầu
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).send('User not found');
@@ -75,7 +74,7 @@ router.get('/friends', async (req, res) => {
             return res.redirect('/auth/login');
         }
 
-        console.log('User ID:', req.session.user.id); // Kiểm tra ID người dùng
+        // console.log('User ID:', req.session.user.id); // Kiểm tra ID người dùng
 
         const friendships = await Friendship.find({ user_id: req.session.user.id, status: 'accepted' })
             .populate('friend_id', 'username profile_picture');
@@ -83,6 +82,33 @@ router.get('/friends', async (req, res) => {
         res.json(friendships);
     } catch (error) {
         console.error('Lỗi khi lấy danh sách bạn bè:', error);
+        res.status(500).send('Có lỗi xảy ra');
+    }
+});
+
+// Lấy danh sách bài đăng của bạn bè
+router.get('/friends-posts', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/auth/login');
+        }
+
+        console.log('User ID:', req.session.user.id);
+
+        // Lấy danh sách bạn bè
+        const friendships = await Friendship.find({ user_id: req.session.user.id, status: 'accepted' })
+            .populate('friend_id', 'username profile_picture');
+
+        // Lấy danh sách ID bạn bè
+        const friendIds = friendships.map(friendship => friendship.friend_id._id);
+
+        // Tìm các bài đăng của bạn bè
+        const posts = await Post.find({ user_id: { $in: friendIds } }).sort({ created_at: -1 }).populate('user_id', 'username profile_picture');
+
+        // Trả về danh sách bài đăng của bạn bè
+        res.json(posts);
+    } catch (error) {
+        console.error('Lỗi khi lấy bài đăng của bạn bè:', error);
         res.status(500).send('Có lỗi xảy ra');
     }
 });

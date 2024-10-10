@@ -319,21 +319,21 @@
 
         showMoreSpans.forEach(span => {
             span.addEventListener('click', function () {
-                const moreImagesDiv = this.previousElementSibling; // Lấy div chứa các ảnh ẩn
+                const moreImagesDiv = this.previousElementSibling;
                 const modalImagesDiv = document.querySelector('.modal-images');
-                modalImagesDiv.innerHTML = ''; // Xóa nội dung trước đó trong modal
+                modalImagesDiv.innerHTML = '';
                 
                 // Hiện các ảnh ẩn
                 moreImagesDiv.querySelectorAll('img').forEach(img => {
-                    img.style.display = 'block'; // hiện các ảnh trong modal
+                    img.style.display = 'block';
                     const modalImg = document.createElement('img');
                     modalImg.src = img.src;
                     modalImg.classList.add('modal-image');
-                    modalImg.style.width = '100%'; // Chiều rộng đầy đủ
+                    modalImg.style.width = '100%';
                     modalImagesDiv.appendChild(modalImg);
                 });
                 
-                $('#imageModal').modal('show'); // Hiển thị modal
+                $('#imageModal').modal('show');
             });
         });
     });

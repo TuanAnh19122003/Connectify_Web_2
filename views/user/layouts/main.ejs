@@ -11,7 +11,8 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet"
     >
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/stylesheets/main.min.css">
 	<link rel="stylesheet" href="/stylesheets/weather-icons.min.css">
 	<link rel="stylesheet" href="/stylesheets/toast-notification.css">
@@ -1393,6 +1394,89 @@
                 });
             })
             .catch(error => console.error('Lỗi khi lấy danh sách bạn bè:', error));
+        
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // Gửi yêu cầu AJAX để lấy bài đăng của bạn bè
+                fetch('/user/friends-posts')
+                    .then(response => response.json())
+                    .then(posts => {
+                        const loadMoreDiv = document.querySelector('.loadMore');
+                        loadMoreDiv.innerHTML = '';
+
+                        if (posts && posts.length > 0) {
+                            posts.forEach(post => {
+                                loadPost(post, loadMoreDiv);
+                            });
+                        } else {
+                            loadMoreDiv.innerHTML = `<div class="post-content"><p>Chưa có bài đăng nào.</p></div>`;
+                        }
+                    })
+                    .catch(error => console.error('Lỗi khi tải bài đăng:', error));
+            });
+
+            // Hàm để hiển thị bài đăng
+            function loadPost(post, container) {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post-content');
+                postElement.style.marginBottom = '20px';
+                postElement.style.border = '1px solid #e0e0e0';
+                postElement.style.padding = '15px';
+                postElement.style.borderRadius = '5px';
+
+                postElement.innerHTML = `
+                    <h5>${post.title}</h5>
+                    <div class="post-meta d-flex justify-content-between">
+                        <p>${post.content}</p>
+                        <span><i class="fa fa-clock"></i> ${new Date(post.created_at).toLocaleString()}</span>
+                    </div>
+                    <div class="post-images row" style="margin-top: 10px;">
+                        ${post.images && post.images.length > 0 ? 
+                            post.images.slice(0, 4).map((image) => `
+                                <div class="col-6" style="padding: 5px;">
+                                    <img src="/${image}" alt="Post Image" class="img-fluid post-image">
+                                </div>
+                            `).join('') : 
+                            `<div class="no-images" style="margin-top: 10px;">
+                                <p>Không có ảnh nào trong bài đăng này.</p>
+                            </div>`}
+                    </div>
+                `;
+
+                // Kiểm tra nếu có nhiều hơn 4 ảnh
+                if (post.images && post.images.length > 4) {
+                    const moreImages = post.images.slice(4);
+                    postElement.innerHTML += `
+                        <span class="show-more" style="cursor: pointer; display: inline;">(+ ${post.images.length - 4} more)</span>
+                    `;
+                    
+                    // Thêm sự kiện click vào phần "show more"
+                    postElement.querySelector('.show-more').addEventListener('click', function () {
+                        const modalImagesDiv = document.querySelector('.modal-images');
+                        modalImagesDiv.innerHTML = ''; // Xóa nội dung trước đó trong modal
+                        
+                        // Hiện các ảnh ẩn
+                        moreImages.forEach(image => {
+                            const modalImg = document.createElement('img');
+                            modalImg.src = `/${image}`; // Đảm bảo đường dẫn đúng
+                            modalImg.classList.add('modal-image');
+                            modalImg.style.width = '100%'; // Chiều rộng đầy đủ
+                            modalImagesDiv.appendChild(modalImg);
+                        });
+                        
+                        $('#imageModal').modal('show'); // Hiển thị modal
+                    });
+                }
+
+                postElement.innerHTML += `
+                    <div style="margin-top: 10px;padding: 10px 0;border-top: 1px solid #e0e0e0;"></div>
+                    <span><i class="fa fa-thumbs-up"></i> ${post.like_count} Thích</span>
+                    <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
+                `;
+
+                // Thêm phần tử bài đăng vào div .loadMore
+                container.appendChild(postElement);
+            }
 
 
     </script>
