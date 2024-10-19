@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
             address: user.address,
             created_at: user.created_at ? format(new Date(user.created_at), 'dd/MM/yyyy HH:mm:ss') : 'N/A',
             role: userRole.role_id.name
-        };
+        };        
         
 
         if (userRole.role_id.name === 'Quản lý') {

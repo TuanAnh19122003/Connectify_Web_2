@@ -238,6 +238,7 @@
                                     </div>
                                 </div>	
                             </div>
+
                             <div class="container mt-4">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -289,9 +290,16 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div style="margin-top: 10px;padding: 10px 0;border-top: 1px solid #e0e0e0;"></div>
-                                                            <span><i class="fa fa-thumbs-up"></i> <%= post.like_count %> Thích</span>
-                                                            <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
+                                                            <br>
+                                                            <div class="post" data-post-id="<%= post._id %>">
+                                                                <i class="fa fa-thumbs-up"></i>
+                                                                <span class="like-count"><%= post.like_count %></span>
+                                                                <button class="btn btn-like" data-post-id="<%= post._id %>">
+                                                                    <i class="fa fa-thumbs-up"></i> Thích
+                                                                </button>
+                                                                <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
+                                                            </div>
+                                                            
                                                         </div>
                                                         
                                                     <% }) %>

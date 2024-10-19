@@ -62,10 +62,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: 'Connectify_Web',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: { maxAge: 1000 * 60 * 60 * 24 }  // 1 ngày
 }));
 
@@ -82,7 +83,6 @@ app.use((req, res, next) => {
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

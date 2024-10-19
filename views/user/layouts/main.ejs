@@ -1478,6 +1478,30 @@
                 container.appendChild(postElement);
             }
 
+            $(document).on('click', '.btn-like', function() {
+                const postId = $(this).data('post-id');
+                const likeCountElement = $(this).closest('.post').find('.like-count'); // Chỉ tìm phần tử like-count trong bài đăng hiện tại
+
+                $.ajax({
+                    type: 'POST',
+                    url: `/user/likes/${postId}`, // Đường dẫn đến API thích
+                    success: function(response) {
+                        let currentCount = parseInt(likeCountElement.text());
+                        
+                        if (response.success) {
+                            if (response.message === 'Thích bài viết thành công') {
+                                likeCountElement.text(currentCount + 1); // Tăng lên 1
+                            } else {
+                                likeCountElement.text(currentCount - 1); // Giảm đi 1
+                            }
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra, vui lòng thử lại sau!');
+                    }
+                });
+            });
+
 
     </script>
     

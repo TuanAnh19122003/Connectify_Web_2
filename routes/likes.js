@@ -171,4 +171,45 @@ router.post('/delete/:id', async (req, res) => {
     }
 });
 
+router.post('/:postId', async (req, res) => {
+    if (!req.session.user || !req.session.user.id) {
+        return res.status(401).json({ success: false, message: 'Người dùng chưa đăng nhập' });
+    }
+
+    const userId = req.session.user.id; // Sử dụng userId
+    const postId = req.params.postId; // Lấy postId từ params
+
+    try {
+        // Kiểm tra xem người dùng đã thích bài đăng này chưa
+        const existingLike = await Like.findOne({ user_id: userId, post_id: postId });
+
+        if (existingLike) {
+            // Nếu đã thích, bỏ thích
+            await Like.deleteOne({ user_id: userId, post_id: postId });
+            // Cập nhật bài đăng giảm like_count
+            const postToUpdate = await Post.findById(postId);
+            postToUpdate.like_count -= 1;  // Giảm like_count khi bỏ thích
+            await postToUpdate.save();
+            console.log("Post after decrementing like_count:", postToUpdate); // Log dữ liệu bài viết sau khi giảm
+            return res.json({ success: true, message: 'Bỏ thích bài viết thành công' });
+
+        } else {
+            // Nếu chưa thích, thêm thích
+            const newLike = new Like({ user_id: userId, post_id: postId, type: 'post' });
+            console.log('New like data:', newLike);
+            await newLike.save();
+            // Cập nhật bài đăng tăng like_count
+            const postToUpdate = await Post.findById(postId);
+            postToUpdate.like_count += 1;  // Tăng like_count khi thêm thích
+            await postToUpdate.save();
+            console.log("Post after incrementing like_count:", postToUpdate); // Log dữ liệu bài viết sau khi tăng
+            return res.json({ success: true, message: 'Thích bài viết thành công' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Có lỗi xảy ra, vui lòng thử lại sau!' });
+    }
+});
+
+
 module.exports = router;

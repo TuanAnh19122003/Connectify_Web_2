@@ -47,6 +47,7 @@ router.use('/userRoles', userRolesRouter);
 const User = require('../models/User');
 const Friendship = require('../models/Friendship');
 const Post = require('../models/Post');
+const Like = require('../models/Like')
 
 router.get('/about/:id', async (req, res) => {
     try {
@@ -58,7 +59,7 @@ router.get('/about/:id', async (req, res) => {
         user.date_of_birth = user.date_of_birth ? format(new Date(user.date_of_birth), 'dd/MM/yyyy') : 'N/A';
 
         const posts = await Post.find({ user_id: req.session.user.id }).sort({ created_at: -1 }); // Sắp xếp theo thời gian tạo
-
+        
         res.render('user/pages/about', { user, posts, loggedInUser: req.session.user }); // Truyền thông tin người dùng đã đăng nhập
     } catch (err) {
         console.error(err);
@@ -112,6 +113,8 @@ router.get('/friends-posts', async (req, res) => {
         res.status(500).send('Có lỗi xảy ra');
     }
 });
+
+
 
 
 module.exports = router;
