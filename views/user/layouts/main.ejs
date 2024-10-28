@@ -1416,7 +1416,7 @@
             });
 
             // Hàm để hiển thị bài đăng
-            function loadPost(post, container) {
+            function loadPost(post, container, comments) {
                 const postElement = document.createElement('div');
                 postElement.classList.add('post-content');
                 postElement.style.marginBottom = '20px';
@@ -1441,42 +1441,57 @@
                                 <p>Không có ảnh nào trong bài đăng này.</p>
                             </div>`}
                     </div>
-                `;
-
-                // Kiểm tra nếu có nhiều hơn 4 ảnh
-                if (post.images && post.images.length > 4) {
-                    const moreImages = post.images.slice(4);
-                    postElement.innerHTML += `
-                        <span class="show-more" style="cursor: pointer; display: inline;">(+ ${post.images.length - 4} more)</span>
-                    `;
-                    
-                    // Thêm sự kiện click vào phần "show more"
-                    postElement.querySelector('.show-more').addEventListener('click', function () {
-                        const modalImagesDiv = document.querySelector('.modal-images');
-                        modalImagesDiv.innerHTML = ''; // Xóa nội dung trước đó trong modal
-                        
-                        // Hiện các ảnh ẩn
-                        moreImages.forEach(image => {
-                            const modalImg = document.createElement('img');
-                            modalImg.src = `/${image}`; // Đảm bảo đường dẫn đúng
-                            modalImg.classList.add('modal-image');
-                            modalImg.style.width = '100%'; // Chiều rộng đầy đủ
-                            modalImagesDiv.appendChild(modalImg);
-                        });
-                        
-                        $('#imageModal').modal('show'); // Hiển thị modal
-                    });
-                }
-
-                postElement.innerHTML += `
                     <div style="margin-top: 10px;padding: 10px 0;border-top: 1px solid #e0e0e0;"></div>
-                    <span><i class="fa fa-thumbs-up"></i> ${post.like_count} Thích</span>
+                    <span class="like-count"><i class="fa fa-thumbs-up"></i> ${post.like_count} Thích</span>
+                    <button class="btn btn-like" data-post-id="${post._id}" style="margin-left: 10px;">Thích</button>
                     <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
+                    <div class="comments-list" style="margin-top: 10px;">
+                        ${comments && comments.length > 0 ? 
+                            comments.map(comment => `
+                                <div class="comment-item" style="border-top: 1px solid #e0e0e0; padding-top: 10px;">
+                                    <strong>${comment.user_id.username}</strong>: ${comment.content}
+                                    <p><em>Ngày bình luận: ${new Date(comment.created_at).toLocaleString()}</em></p>
+                                </div>
+                            `).join('') : 
+                            `<p>Chưa có bình luận nào.</p>`}
+                    </div>
+                    <form action="/user/post/${post._id}/comment" method="POST" class="mt-1">
+                        <div class="input-group">
+                            <input type="text" name="comment" class="form-control" placeholder="Thêm bình luận..." required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Đăng</button>
+                            </div>
+                        </div>
+                    </form>
                 `;
+
+                // Thêm sự kiện click cho nút Thích
+                postElement.querySelector('.btn-like').addEventListener('click', function () {
+                    const postId = post._id;
+                    // Gửi yêu cầu AJAX để tăng lượt thích cho bài đăng
+                    fetch(`/user/likes/${postId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ postId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const likeCountElement = postElement.querySelector('.like-count');
+                            let currentCount = parseInt(likeCountElement.textContent);
+                            likeCountElement.textContent = `${currentCount + 1} Thích`;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
 
                 // Thêm phần tử bài đăng vào div .loadMore
                 container.appendChild(postElement);
             }
+
+            
 
             $(document).on('click', '.btn-like', function() {
                 const postId = $(this).data('post-id');
