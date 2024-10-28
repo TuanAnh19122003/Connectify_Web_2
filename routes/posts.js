@@ -6,6 +6,7 @@ const path = require('path');
 const Post = require('../models/Post');
 const Like = require('../models/Like');
 const User = require('../models/User');
+const Comment = require('../models/Comment');
 const fs = require('fs');
 
 // Cấu hình multer để lưu trữ ảnh
@@ -209,6 +210,7 @@ router.post('/post', upload.array('images', 10), async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+
 
 
 

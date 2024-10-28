@@ -1,5 +1,5 @@
 const express = require('express');
-const { format } = require('date-fns'); // Nếu bạn đang sử dụng date-fns
+const { format } = require('date-fns');
 const multer = require('multer');
 const router = express.Router();
 
@@ -48,6 +48,8 @@ const User = require('../models/User');
 const Friendship = require('../models/Friendship');
 const Post = require('../models/Post');
 const Like = require('../models/Like')
+const Comment = require('../models/Comment');
+
 
 router.get('/about/:id', async (req, res) => {
     try {
@@ -59,8 +61,9 @@ router.get('/about/:id', async (req, res) => {
         user.date_of_birth = user.date_of_birth ? format(new Date(user.date_of_birth), 'dd/MM/yyyy') : 'N/A';
 
         const posts = await Post.find({ user_id: req.session.user.id }).sort({ created_at: -1 }); // Sắp xếp theo thời gian tạo
-        
-        res.render('user/pages/about', { user, posts, loggedInUser: req.session.user }); // Truyền thông tin người dùng đã đăng nhập
+        const comments = await Comment.find({ user_id: user._id }).populate('user_id', 'username profile_picture'); // Lấy bình luận của người dùng
+
+        res.render('user/pages/about', { user, posts, comments, format, loggedInUser: req.session.user }); // Truyền thông tin người dùng đã đăng nhập
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal server error');
@@ -94,7 +97,7 @@ router.get('/friends-posts', async (req, res) => {
             return res.redirect('/auth/login');
         }
 
-        console.log('User ID:', req.session.user.id);
+        // console.log('User ID:', req.session.user.id);
 
         // Lấy danh sách bạn bè
         const friendships = await Friendship.find({ user_id: req.session.user.id, status: 'accepted' })
@@ -114,6 +117,55 @@ router.get('/friends-posts', async (req, res) => {
     }
 });
 
+router.get('/post/:id', async (req, res) => {
+    try {
+        const postId = req.params.id; // Lấy ID bài đăng từ URL
+        const post = await Post.findById(postId).populate('user_id', 'username profile_picture'); // Lấy bài đăng và thông tin người dùng
+
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Lấy bình luận của bài đăng
+        const comments = await Comment.find({ post_id: postId }).populate('user_id', 'username profile_picture'); // Populating user info for comments
+
+        res.render('user/pages/about', { post, comments }); // Render trang bài đăng với bài viết và bình luận
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        res.status(500).send('Đã có lỗi xảy ra khi lấy bài đăng.');
+    }
+});
+
+
+router.post('/post/:id/comment', async (req, res) => {
+    try {
+        const postId = req.params.id; // Lấy ID của bài đăng từ URL
+        const userId = req.session.user.id; // Lấy ID người dùng từ session
+        const content = req.body.comment; // Lấy nội dung bình luận từ body của request
+
+        console.log('Post ID:', postId);
+        console.log('User ID:', userId);
+        console.log('Comment Content:', content);
+
+        // Tạo đối tượng bình luận
+        const comment = new Comment({
+            user_id: userId,
+            post_id: postId,
+            content: content,
+            created_at: new Date() 
+        });
+
+        // Lưu bình luận vào cơ sở dữ liệu
+        await comment.save();
+
+        await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } }); 
+
+        res.redirect('back'); 
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        res.status(500).send('Đã có lỗi xảy ra khi thêm bình luận.');
+    }
+});
 
 
 

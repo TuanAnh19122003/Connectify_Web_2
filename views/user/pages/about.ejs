@@ -253,17 +253,18 @@
                                                                 <p><%= post.content %></p>
                                                                 <span><i class="fa fa-clock"></i> <%= post.created_at.toLocaleString() %></span>
                                                             </div>
+                                                            
                                                             <% if (post.images && post.images.length > 0) { %>
                                                                 <div class="post-images row" style="margin-top: 10px;">
-                                                                    <% post.images.slice(0, 4).forEach((image, index) => { %> <!-- Hiển thị 4 ảnh đầu tiên -->
+                                                                    <% post.images.slice(0, 4).forEach((image, index) => { %>
                                                                         <div class="col-6" style="padding: 5px;">
                                                                             <img src="/<%= image %>" alt="Post Image" class="img-fluid">
                                                                         </div>
                                                                     <% }) %>
                                                                 </div>
-                                                                <% if (post.images.length > 4) { %> <!-- Nếu có nhiều hơn 4 ảnh -->
+                                                                <% if (post.images.length > 4) { %>
                                                                     <div class="more-images" style="display: none;">
-                                                                        <% post.images.slice(4).forEach(image => { %> <!-- Hiện ảnh từ ảnh thứ 5 trở đi -->
+                                                                        <% post.images.slice(4).forEach(image => { %>
                                                                             <img src="/<%= image %>" alt="Post Image" class="modal-image" style="display: none;">
                                                                         <% }) %>
                                                                     </div>
@@ -271,37 +272,42 @@
                                                                 <% } %>
                                                             <% } else { %>
                                                                 <div class="no-images" style="margin-top: 10px;">
-                                                                    <p>Không có ảnh nào trong bài đăng này.</p> <!-- Thông báo khi không có ảnh -->
+                                                                    <p>Không có ảnh nào trong bài đăng này.</p>
                                                                 </div>
                                                             <% } %>
                                                             
-                                                            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-lg" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="imageModalLabel">All Images</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="modal-images"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <br>
                                                             <div class="post" data-post-id="<%= post._id %>">
                                                                 <i class="fa fa-thumbs-up"></i>
                                                                 <span class="like-count"><%= post.like_count %></span>
                                                                 <button class="btn btn-like" data-post-id="<%= post._id %>">
                                                                     <i class="fa fa-thumbs-up"></i> Thích
                                                                 </button>
-                                                                <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
+                            
+                                                                <div class="comments-list">
+                                                                    <% let postComments = comments.filter(comment => comment.post_id.equals(post._id)); %>
+                                                                    <% if (postComments.length > 0) { %>
+                                                                        <% postComments.forEach(comment => { %>
+                                                                            <div class="comment-item" style="border-top: 1px solid #e0e0e0; padding-top: 10px;">
+                                                                                <strong><%= comment.user_id.username %></strong>: <%= comment.content %>
+                                                                                <p><em>Ngày bình luận: <%= format(new Date(comment.created_at), 'dd/MM/yyyy HH:mm:ss') %></em></p>
+                                                                            </div>
+                                                                        <% }) %>
+                                                                    <% } else { %>
+                                                                        <p>Chưa có bình luận nào.</p>
+                                                                    <% } %>
+                                                                </div>
+                                                                
+                                                                <form action="/user/post/<%= post._id %>/comment" method="POST" class="mt-1">
+                                                                    <div class="input-group">
+                                                                        <input type="text" name="comment" class="form-control" placeholder="Thêm bình luận..." required>
+                                                                        <div class="input-group-append">
+                                                                            <button type="submit" class="btn btn-primary">Đăng</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                                
                                                             </div>
-                                                            
                                                         </div>
-                                                        
                                                     <% }) %>
                                                 <% } else { %>
                                                     <div class="post-content">
@@ -313,6 +319,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                                                               
                         </div>
                     </div>	
