@@ -3,9 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ</title>
+    <title>Trang Chính Admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            flex: 1;
+            min-height: 200px;
+        }
+        .dashboard-card h3 {
+            margin-bottom: 15px;
+        }
+        #userLoginChart {
+            margin-top: 40px;
+            max-height: 400px; /* Điều chỉnh chiều cao tối đa của biểu đồ */
+        }
+    </style>
 </head>
 <body>
-    <h1>Trang chính Admin</h1>
+    <div class="container">
+        <div class="row d-flex">
+            <!-- Card cho số lượng bài đăng -->
+            <div class="col-md-3">
+                <div class="dashboard-card">
+                    <h3>Số Lượng Bài Đăng</h3>
+                    <p id="postCount"><%= postCount %></p>
+                    <a href="/admin/posts" class="btn btn-primary">Quản Lý Bài Đăng</a>
+                </div>
+            </div>
+
+            <!-- Card cho số lượng người dùng -->
+            <div class="col-md-3">
+                <div class="dashboard-card">
+                    <h3>Số Lượng Người Dùng</h3>
+                    <p id="userCount"><%= userCount %></p>
+                    <a href="/admin/users" class="btn btn-primary">Quản Lý Người Dùng</a>
+                </div>
+            </div>
+
+            <!-- Card cho số lượng bình luận -->
+            <div class="col-md-3">
+                <div class="dashboard-card">
+                    <h3>Số Lượng Bình Luận</h3>
+                    <p id="commentCount"><%= commentCount %></p>
+                    <a href="/admin/comments" class="btn btn-primary">Quản Lý Bình Luận</a>
+                </div>
+            </div>
+
+            <!-- Card cho phần hỗ trợ -->
+            <div class="col-md-3">
+                <div class="dashboard-card">
+                    <h3>Hỗ Trợ</h3>
+                    <p>Liên hệ nếu có vấn đề gì!</p>
+                    <a href="/admin/support" class="btn btn-primary">Liên Hệ Hỗ Trợ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ số lượng người dùng đăng nhập -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard-card">
+                    <h3>Biểu Đồ Người Dùng Đăng Nhập</h3>
+                    <canvas id="userLoginChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('userLoginChart').getContext('2d');
+        const userLoginChart = new Chart(ctx, {
+            type: 'line', // Hoặc 'bar', 'pie', v.v. tùy thuộc vào loại biểu đồ bạn muốn
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5'], // Thay đổi nhãn cho các tháng hoặc thời gian khác
+                datasets: [{
+                    label: 'Số Lượng Người Dùng Đăng Nhập',
+                    data: [12, 19, 3, 5, 2], // Thay đổi dữ liệu theo số lượng người dùng thực tế
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
