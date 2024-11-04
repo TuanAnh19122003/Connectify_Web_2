@@ -3,11 +3,35 @@
 const app = require('../app'); // Nhập ứng dụng Express từ app.js
 var debug = require('debug')('connectify-web-2:server');
 const http = require('http'); // Sử dụng module HTTP để tạo server
+const Message = require('../models/Message');
+const socketIo = require('socket.io');
 
 const port = normalizePort(process.env.PORT || '3000'); // Xác định cổng
 app.set('port', port); // Cấu hình cổng cho ứng dụng
 
 const server = http.createServer(app); // Tạo server HTTP
+const io = socketIo(server); // Gắn socket.io vào server
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // Xử lý khi có một message mới
+  socket.on('sendMessage', (data) => {
+      // Lưu message vào cơ sở dữ liệu (MongoDB)
+      const message = new Message(data);
+      message.save()
+          .then(() => {
+              // Gửi message đến người nhận
+              socket.to(data.receiver_id).emit('newMessage', data);
+          })
+          .catch(error => console.error('Error saving message:', error));
+  });
+
+  // Xử lý khi người dùng ngắt kết nối
+  socket.on('disconnect', () => {
+      console.log('User disconnected');
+  });
+});
 
 server.listen(port); // Khởi động server
 server.on('error', onError); // Xử lý lỗi khi khởi động server

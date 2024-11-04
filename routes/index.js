@@ -49,7 +49,7 @@ const Friendship = require('../models/Friendship');
 const Post = require('../models/Post');
 const Like = require('../models/Like')
 const Comment = require('../models/Comment');
-
+const Message = require('../models/Message');
 
 router.get('/about/:id', async (req, res) => {
     try {
@@ -167,6 +167,24 @@ router.post('/post/:id/comment', async (req, res) => {
     }
 });
 
+
+// API lấy tin nhắn giữa hai người dùng
+router.get('/messages/:userId/:friendId', async (req, res) => {
+    try {
+        const { userId, friendId } = req.params;
+        const messages = await Message.find({
+            $or: [
+                { sender_id: userId, receiver_id: friendId },
+                { sender_id: friendId, receiver_id: userId }
+            ]
+        }).sort({ created_at: 1 }); // Sắp xếp theo thời gian tạo
+
+        res.json(messages);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        res.status(500).json({ error: 'Error fetching messages' });
+    }
+});
 
 
 module.exports = router;

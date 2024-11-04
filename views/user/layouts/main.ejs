@@ -21,6 +21,14 @@
     <link rel="stylesheet" href="/stylesheets/color.css">
     <link rel="stylesheet" href="/stylesheets/responsive.css">
 </head>
+<style>
+    #friendProfilePic {
+        width: 35px; /* Chiều rộng */
+        height: 35px; /* Chiều cao */
+        object-fit: cover; /* Đảm bảo ảnh không bị biến dạng */
+        border-radius: 50%; /* Tạo hình tròn */
+    }
+</style>
 <body>
     <div class="wavy-wraper">
 		<div class="wavy">
@@ -694,9 +702,22 @@
                 <ul class="chat-users" id="chat-users">
                     <!-- Danh sách bạn bè sẽ được thêm vào đây -->
                 </ul>
-                <!-- <div class="chat-box show">
-                     Nội dung chat box 
-                </div>-->
+                <div class="chat-box show" id="chat-box" style="display: none; bottom: -350px;">
+                    <div class="chat-header bg-primary text-white d-flex justify-content-between align-items-center p-2">
+                        <img src="/uploads/default_profile.png" alt="Friend's Profile Picture" class="rounded-circle" width="35" height="35" id="friendProfilePic">
+                        <h5 id="friendName" class="mb-0"></h5> 
+                        <button id="closeChatButton" class="btn btn-danger btn-sm">X</button>
+                    </div>
+                    <div class="chat-messages" id="chat-messages" style="max-height: 400px; overflow-y: auto; padding: 10px;">
+                        <!-- Các tin nhắn sẽ được thêm vào đây -->
+                    </div>
+                    <div class="input-group p-2">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Type a message..." aria-label="Type a message...">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" id="sendMessageButton" type="button">Send</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -1378,6 +1399,7 @@
                 friends.forEach(friend => {
                     const li = document.createElement('li');
                     li.className = 'friend-item position-relative'; // Thêm lớp Bootstrap
+                    li.setAttribute('data-friend-id', friend.friend_id._id);
                     li.innerHTML = `
                         <div class="friend-thumbnail">
                             <img src="/${friend.friend_id.profile_picture || '/images/default_profile.png'}" 
@@ -1519,6 +1541,75 @@
 
 
     </script>
-    
+    <!-- Thêm đoạn mã này vào cuối file HTML của bạn -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io(); // Kết nối đến server socket.io
+        const userId = '<%= user.id %>'; // Lấy ID người dùng từ session
+
+        // Khi người dùng chọn bạn bè để nhắn tin
+        document.getElementById('chat-users').addEventListener('click', function(event) {
+            const friendItem = event.target.closest('.friend-item');
+            
+            if (friendItem) {
+                const friendId = friendItem.dataset.friendId; // Lấy ID bạn bè
+                const friendName = friendItem.querySelector('.friend-info span').textContent; // Lấy tên bạn bè
+                const friendProfilePic = friendItem.querySelector('img').src;
+                document.getElementById('friendName').textContent = friendName; // Hiển thị tên bạn bè
+                document.getElementById('friendProfilePic').src = friendProfilePic;
+
+                // Hiện chat box
+                document.getElementById('chat-box').style.display = 'block';
+                document.getElementById('chat-messages').innerHTML = ''; // Xóa các tin nhắn cũ
+
+                fetch(`user/messages/${userId}/${friendId}`)
+                    .then(response => response.json())
+                    .then(previousMessages => {
+                        previousMessages.forEach(message => {
+                            const messageElement = document.createElement('div');
+                            messageElement.textContent = `${message.sender_id === userId ? 'Me' : friendName}: ${message.content}`;
+                            document.getElementById('chat-messages').appendChild(messageElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching previous messages:', error);
+                    });
+
+                // Gửi message khi nhấn nút gửi
+                document.getElementById('sendMessageButton').onclick = () => {
+                    const messageContent = document.getElementById('messageInput').value;
+                    const messageData = {
+                        sender_id: userId,
+                        receiver_id: friendId,
+                        content: messageContent
+                    };
+                    socket.emit('sendMessage', messageData); // Gửi message đến server
+
+                    // Hiển thị tin nhắn vừa gửi trong chat box
+                    const sentMessageElement = document.createElement('div');
+                    sentMessageElement.textContent = `Me: ${messageContent}`;
+                    document.getElementById('chat-messages').appendChild(sentMessageElement);
+
+                    // Xóa nội dung input
+                    document.getElementById('messageInput').value = '';
+                };
+                // Nút để tắt chat box
+                document.getElementById('closeChatButton').addEventListener('click', function() {
+                    document.getElementById('chat-box').style.display = 'none'; // Ẩn chat box
+                });
+
+            }
+        });
+
+
+        // Lắng nghe sự kiện message mới từ server
+        socket.on('newMessage', (data) => {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${data.sender_id === userId ? 'Me' : data.sender_name}: ${data.content}`;
+            document.getElementById('chat-messages').appendChild(messageElement);
+        });
+    </script>
+
+
 </body>
 </html>
