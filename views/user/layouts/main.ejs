@@ -28,6 +28,33 @@
         object-fit: cover; /* Đảm bảo ảnh không bị biến dạng */
         border-radius: 50%; /* Tạo hình tròn */
     }
+    .btn-like {
+        border: none;
+        background: transparent;
+        color: #65676b;
+        font-size: 14px;
+        cursor: pointer;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-like.liked {
+        color: #1877f2; /* Màu xanh Facebook */
+    }
+
+    .like-count i {
+        margin-right: 5px;
+        font-size: 16px;
+        transition: color 0.2s ease;
+    }
+
+    .like-count.liked i {
+        color: #1877f2; /* Màu xanh Facebook khi liked */
+    }
+
+    .btn-like:hover, .like-count:hover {
+        transform: scale(1.1);
+    }
+
 </style>
 <body>
     <div class="wavy-wraper">
@@ -704,7 +731,7 @@
                 </ul>
                 <div class="chat-box show" id="chat-box" style="display: none; bottom: -350px;">
                     <div class="chat-header bg-primary text-white d-flex justify-content-between align-items-center p-2">
-                        <img src="/uploads/default_profile.png" alt="Friend's Profile Picture" class="rounded-circle" width="35" height="35" id="friendProfilePic">
+                        <img src="/uploads/default.jpg" alt="Friend's Profile Picture" class="rounded-circle" width="35" height="35" id="friendProfilePic">
                         <h5 id="friendName" class="mb-0"></h5> 
                         <button id="closeChatButton" class="btn btn-danger btn-sm">X</button>
                     </div>
@@ -1417,7 +1444,6 @@
             })
             .catch(error => console.error('Lỗi khi lấy danh sách bạn bè:', error));
         
-
             document.addEventListener("DOMContentLoaded", function () {
                 // Gửi yêu cầu AJAX để lấy bài đăng của bạn bè
                 fetch('/user/friends-posts')
@@ -1437,8 +1463,7 @@
                     .catch(error => console.error('Lỗi khi tải bài đăng:', error));
             });
 
-            // Hàm để hiển thị bài đăng
-            function loadPost(post, container, comments) {
+            function loadPost(post, container) {
                 const postElement = document.createElement('div');
                 postElement.classList.add('post-content');
                 postElement.style.marginBottom = '20px';
@@ -1464,72 +1489,121 @@
                             </div>`}
                     </div>
                     <div style="margin-top: 10px;padding: 10px 0;border-top: 1px solid #e0e0e0;"></div>
-                    <span class="like-count"><i class="fa fa-thumbs-up"></i> ${post.like_count} Thích</span>
-                    <button class="btn btn-like" data-post-id="${post._id}" style="margin-left: 10px;">Thích</button>
+                    <span class="like-count"><span class="like-text">${post.like_count}</span></span>
+                    <button class="btn btn-like" data-post-id="${post._id}">
+                        <i class="fa fa-thumbs-up"></i> Thích
+                    </button>
                     <span style="float: inline-end;"><i class="fa fa-comment"></i> Bình luận</span>
                     <div class="comments-list" style="margin-top: 10px;">
-                        ${comments && comments.length > 0 ? 
-                            comments.map(comment => `
-                                <div class="comment-item" style="border-top: 1px solid #e0e0e0; padding-top: 10px;">
-                                    <strong>${comment.user_id.username}</strong>: ${comment.content}
-                                    <p><em>Ngày bình luận: ${new Date(comment.created_at).toLocaleString()}</em></p>
+                        <div class="comments-container" id="comments-container-${post._id}"></div>  
+                        <div class="comment-input">
+                            <form action="/user/post/${post._id}/comment" method="POST" class="mt-1" id="comment-form-${post._id}">
+                                <div class="input-group">
+                                    <input type="text" name="comment" class="form-control" placeholder="Thêm bình luận..." required>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">Đăng</button>
+                                    </div>
                                 </div>
-                            `).join('') : 
-                            `<p>Chưa có bình luận nào.</p>`}
-                    </div>
-                    <form action="/user/post/${post._id}/comment" method="POST" class="mt-1">
-                        <div class="input-group">
-                            <input type="text" name="comment" class="form-control" placeholder="Thêm bình luận..." required>
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">Đăng</button>
-                            </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 `;
 
-                // Thêm sự kiện click cho nút Thích
-                postElement.querySelector('.btn-like').addEventListener('click', function () {
-                    const postId = post._id;
-                    // Gửi yêu cầu AJAX để tăng lượt thích cho bài đăng
-                    fetch(`/user/likes/${postId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ postId })
-                    })
+                // Gửi yêu cầu để lấy bình luận của bài đăng và hiển thị ngay
+                fetch(`/user/post-comment/${post._id}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            const likeCountElement = postElement.querySelector('.like-count');
-                            let currentCount = parseInt(likeCountElement.textContent);
-                            likeCountElement.textContent = `${currentCount + 1} Thích`;
-                        }
+                        const comments = data.comments;
+                        displayComments(post._id, comments);
                     })
-                    .catch(error => console.error('Error:', error));
-                });
+                    .catch(error => console.error('Lỗi khi tải bình luận:', error));
 
-                // Thêm phần tử bài đăng vào div .loadMore
+                // Xử lý việc thêm bình luận mới
+                const commentForm = document.getElementById(`comment-form-${post._id}`);
+                if (commentForm) {
+                    commentForm.addEventListener('submit', function (event) {
+                        event.preventDefault();
+
+                        const commentInput = commentForm.querySelector('input[name="comment"]');
+                        const commentContent = commentInput.value;
+
+                        // Tạo bình luận mới
+                        const newComment = {
+                            user_id: { username: 'Tên người dùng' },  // Sửa lại theo dữ liệu thực tế
+                            content: commentContent,
+                            created_at: new Date().toISOString()
+                        };
+
+                        // Thêm bình luận vào container mà không cần tải lại từ server
+                        displayComments(post._id, [newComment]);
+
+                        // Xóa nội dung form sau khi đăng
+                        commentInput.value = '';
+
+                        // Gửi yêu cầu tới server để lưu bình luận
+                        fetch(`/user/post/${post._id}/comment`, {
+                            method: 'POST',
+                            body: new URLSearchParams({ comment: commentContent }),
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        }).catch(error => console.error('Lỗi khi gửi bình luận:', error));
+                    });
+                }
+
+                // Thêm bài đăng vào container
                 container.appendChild(postElement);
             }
 
-            
+            function displayComments(postId, comments) {
+                const commentsContainer = document.getElementById(`comments-container-${postId}`);
+                
+                if (!commentsContainer) {
+                    console.error('Không tìm thấy phần tử chứa bình luận.');
+                    return;
+                }
+
+                commentsContainer.innerHTML = '';  // Xóa các bình luận cũ nếu có
+
+                // Kiểm tra xem có bình luận không
+                if (comments.length === 0) {
+                    commentsContainer.innerHTML = '<p>Chưa có bình luận nào.</p>';
+                } else {
+                    // Hiển thị các bình luận
+                    comments.forEach(comment => {
+                        const commentElement = document.createElement('div');
+                        commentElement.classList.add('comment');
+                        commentElement.innerHTML = `
+                            <strong>${comment.user_id.username}</strong>: ${comment.content}
+                            <p><em>Ngày bình luận: ${new Date(comment.created_at).toLocaleString()}</em></p>
+                        `;
+                        commentsContainer.appendChild(commentElement);
+                    });
+                }
+            }
 
             $(document).on('click', '.btn-like', function() {
                 const postId = $(this).data('post-id');
-                const likeCountElement = $(this).closest('.post').find('.like-count'); // Chỉ tìm phần tử like-count trong bài đăng hiện tại
+                const likeCountElement = $(this).closest('.post-content').find('.like-count');
+                const likeTextElement = likeCountElement.find('.like-text');
+                const likeButton = $(this);
 
                 $.ajax({
                     type: 'POST',
                     url: `/user/likes/${postId}`, // Đường dẫn đến API thích
                     success: function(response) {
-                        let currentCount = parseInt(likeCountElement.text());
-                        
+                        let currentCount = parseInt(likeTextElement.text().trim());
+
                         if (response.success) {
+                            // Kiểm tra nếu bài viết đã được "like"
                             if (response.message === 'Thích bài viết thành công') {
-                                likeCountElement.text(currentCount + 1); // Tăng lên 1
-                            } else {
-                                likeCountElement.text(currentCount - 1); // Giảm đi 1
+                                likeTextElement.text(currentCount + 1); // Tăng số like
+                                likeButton.addClass('liked'); // Thêm class liked
+                                likeCountElement.addClass('liked'); // Thêm class liked cho like count
+                            } else if (response.message === 'Bỏ thích thành công') {
+                                likeTextElement.text(currentCount - 1); // Giảm số like
+                                likeButton.removeClass('liked'); // Bỏ class liked
+                                likeCountElement.removeClass('liked'); // Bỏ class liked cho like count
                             }
                         }
                     },
@@ -1538,6 +1612,8 @@
                     }
                 });
             });
+
+
 
 
     </script>

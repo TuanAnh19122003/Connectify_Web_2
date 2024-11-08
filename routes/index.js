@@ -167,6 +167,25 @@ router.post('/post/:id/comment', async (req, res) => {
     }
 });
 
+router.get('/post-comment/:id', async (req, res) => {
+    try {
+        const postId = req.params.id; // Lấy ID bài đăng từ URL
+        const post = await Post.findById(postId).populate('user_id', 'username profile_picture'); // Lấy bài đăng và thông tin người dùng
+
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found' });  // Trả về JSON khi bài đăng không tồn tại
+        }
+
+        // Lấy bình luận của bài đăng
+        const comments = await Comment.find({ post_id: postId }).populate('user_id', 'username profile_picture'); // Populating user info for comments
+
+        res.json({ post, comments }); // Trả về dữ liệu JSON với bài đăng và bình luận
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        res.status(500).json({ error: 'Đã có lỗi xảy ra khi lấy bài đăng.' });  // Trả về JSON khi có lỗi
+    }
+});
+
 
 // API lấy tin nhắn giữa hai người dùng
 router.get('/messages/:userId/:friendId', async (req, res) => {
