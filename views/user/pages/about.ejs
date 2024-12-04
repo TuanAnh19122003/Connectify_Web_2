@@ -149,10 +149,6 @@
                                     <p>
                                         <%= loggedInUser.phone_number %>
                                     </p>
-                                    <span class="f-title"><i class="fa fa-medkit"></i> Blood group:</span>
-                                    <p>
-                                        B+
-                                    </p>
                                     <span class="f-title"><i class="fa fa-male"></i> Gender:</span>
                                     <p>
                                         <%= loggedInUser.gender %> 
@@ -299,10 +295,16 @@
                                                 <% if (posts && posts.length > 0) { %>
                                                     <% posts.forEach(post => { %>
                                                         <div class="post-content" style="margin-bottom: 20px; border: 1px solid #e0e0e0; padding: 15px; border-radius: 5px;">
-                                                            <h5><%= post.title %></h5>
+                                                            <div class="d-flex justify-content-between">
+                                                                <h5><%= post.title %></h5>
+                                                                <button type="button" class="btn btn-secondary btn-sm edit-post-btn" data-post-id="<%= post._id %>" data-toggle="modal" data-target="#editPostModal_<%= post._id %>">
+                                                                    Edit
+                                                                </button>
+                                                            </div>
                                                             <div class="post-meta d-flex justify-content-between">
                                                                 <p><%= post.content %></p>
                                                                 <span><i class="fa fa-clock"></i> <%= post.created_at.toLocaleString() %></span>
+                                                                
                                                             </div>
                                                             
                                                             <% if (post.images && post.images.length > 0) { %>
@@ -359,6 +361,38 @@
                                                                 
                                                             </div>
                                                         </div>
+                                                        <!-- Modal Chỉnh sửa Bài đăng -->
+                                                        <div class="modal fade" id="editPostModal_<%= post._id %>" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel_<%= post._id %>" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="editPostModalLabel_<%= post._id %>">Edit Post</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <form action="/user/edit-post/<%= post._id %>" method="POST">
+                                                                        <div class="modal-body">
+                                                                            <!-- Tiêu đề -->
+                                                                            <div class="form-group">
+                                                                                <label for="title">Title:</label>
+                                                                                <input type="text" id="title" name="title" class="form-control" value="<%= post.title %>" required>
+                                                                            </div>
+                                                                            <!-- Nội dung -->
+                                                                            <div class="form-group">
+                                                                                <label for="content">Content:</label>
+                                                                                <textarea id="content" name="content" class="form-control" required><%= post.content %></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     <% }) %>
                                                 <% } else { %>
                                                     <div class="post-content">
@@ -370,6 +404,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             
                             <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -419,5 +454,22 @@
             });
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lắng nghe sự kiện bấm nút chỉnh sửa
+        const editButtons = document.querySelectorAll('.edit-post-btn');
+        
+        // Khi bấm nút Chỉnh sửa, hiện form chỉnh sửa bài đăng
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const postId = button.getAttribute('data-post-id');
+                const modal = document.getElementById('editPostModal_' + postId);
+                
+                // Hiển thị modal chỉnh sửa
+                $(modal).modal('show'); // Dùng jQuery để mở modal nếu dùng Bootstrap
+            });
+        });
+    });
+
 
 </script>

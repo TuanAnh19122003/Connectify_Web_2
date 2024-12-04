@@ -135,6 +135,32 @@ router.get('/post/:id', async (req, res) => {
         res.status(500).send('Đã có lỗi xảy ra khi lấy bài đăng.');
     }
 });
+// Xử lý cập nhật bài đăng
+router.post('/edit-post/:id', async (req, res) => {
+    try {
+        const { title, content } = req.body;
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.redirect('/user');
+        }
+
+        // Chỉ cho phép người dùng chỉnh sửa bài đăng của chính họ
+        if (post.user_id.toString() !== req.session.user.id) {
+            return res.redirect('/user');
+        }
+
+        post.title = title;
+        post.content = content;
+        await post.save();
+        
+        res.redirect('/user/about/' + req.session.user.id);
+    } catch (error) {
+        console.error(error);
+        res.redirect('/user');
+    }
+});
+
 
 
 router.post('/post/:id/comment', async (req, res) => {
