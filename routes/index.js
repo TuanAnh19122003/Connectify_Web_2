@@ -205,5 +205,44 @@ router.get('/messages/:userId/:friendId', async (req, res) => {
     }
 });
 
+// GET form chỉnh sửa thông tin người dùng
+router.get('/edit-profile', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/auth/login');
+    }
+    try {
+        const user = await User.findById(req.session.user.id);
+        res.render('user/pages/edit-profile', { user });
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).send('Error fetching user data.');
+    }
+});
+
+// POST cập nhật thông tin người dùng
+router.post('/edit-profile', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/auth/login');
+    }
+    try {
+        const updatedData = {
+            bio: req.body.bio,
+            date_of_birth: req.body.date_of_birth,
+            phone_number: req.body.phone_number,
+            gender: req.body.gender,
+            address: req.body.address,
+            occupation: req.body.occupation,
+        };
+
+        await User.findByIdAndUpdate(req.session.user.id, updatedData);
+        req.session.user = { ...req.session.user, ...updatedData }; // Cập nhật lại session
+        res.redirect('/user/about/' + req.session.user.id);
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).send('Error updating user profile.');
+    }
+});
+
+
 
 module.exports = router;

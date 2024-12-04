@@ -161,10 +161,6 @@
                                     <p>
                                         <%= loggedInUser.address %>
                                     </p>
-                                    <span class="f-title"><i class="fa fa-briefcase"></i> Occupation:</span>
-                                    <p>
-                                        UI/UX Designer 
-                                    </p>
                                     <span class="f-title"><i class="fa fa-handshake-o"></i> Joined:</span>
                                     <p>
                                         <%= formatDate(user.created_at) %>
@@ -176,9 +172,64 @@
                                     </p>
                                     
                                 </div>
+                                <!-- Nút Edit sẽ mở modal -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
+                                    Edit Profile
+                                </button>
+
                             </div>
                             </aside>	
-                        </div>	
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="/user/edit-profile" method="POST">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="bio">About Me:</label>
+                                                <textarea id="bio" name="bio" class="form-control"><%= user.bio %></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="date_of_birth">Birthday:</label>
+                                                <input type="date" id="date_of_birth" name="date_of_birth" class="form-control" value="<%= user.date_of_birth ? user.date_of_birth.toISOString().split('T')[0] : '' %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phone_number">Phone Number:</label>
+                                                <input type="text" id="phone_number" name="phone_number" class="form-control" value="<%= user.phone_number %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="gender">Gender:</label>
+                                                <select id="gender" name="gender" class="form-control">
+                                                    <option value="Male" <%= user.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                                                    <option value="Female" <%= user.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                                                    <option value="Other" <%= user.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="address">Country:</label>
+                                                <input type="text" id="address" name="address" class="form-control" value="<%= user.address %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="created_at">Account Created:</label>
+                                                <input type="date" id="created_at" class="form-control" value="<%= user.created_at ? user.created_at.toISOString().split('T')[0] : '' %>">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-lg-8 col-md-8">
                             <div class="central-meta">
                                 <span class="create-post">General Info<a href="#" title="">See All</a></span>
