@@ -1654,12 +1654,32 @@
                 // Gửi message khi nhấn nút gửi
                 document.getElementById('sendMessageButton').onclick = () => {
                     const messageContent = document.getElementById('messageInput').value;
+                    
+                    // Kiểm tra nếu messageInput trống
+                    if (!messageContent.trim()) {
+                        // Hiển thị thông báo lỗi
+                        const errorMessage = document.createElement('div');
+                        errorMessage.textContent = 'Please enter a message before sending.';
+                        errorMessage.style.color = 'red';
+                        errorMessage.style.fontSize = '12px';
+                        document.getElementById('chat-box').appendChild(errorMessage);
+                        
+                        // Tự động ẩn thông báo lỗi sau 3 giây
+                        setTimeout(() => {
+                            errorMessage.remove();
+                        }, 8000);
+                        
+                        return; // Dừng không gửi tin nhắn
+                    }
+
                     const messageData = {
                         sender_id: userId,
                         receiver_id: friendId,
                         content: messageContent
                     };
-                    socket.emit('sendMessage', messageData); // Gửi message đến server
+                    
+                    // Gửi message đến server
+                    socket.emit('sendMessage', messageData);
 
                     // Hiển thị tin nhắn vừa gửi trong chat box
                     const sentMessageElement = document.createElement('div');
@@ -1669,6 +1689,7 @@
                     // Xóa nội dung input
                     document.getElementById('messageInput').value = '';
                 };
+
                 // Nút để tắt chat box
                 document.getElementById('closeChatButton').addEventListener('click', function() {
                     document.getElementById('chat-box').style.display = 'none'; // Ẩn chat box

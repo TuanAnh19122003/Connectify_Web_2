@@ -276,16 +276,16 @@
                                         >
                                     </figure>
                                     <div class="newpst-input">
-                                        <form method="POST" action="user/posts/post" enctype="multipart/form-data">
+                                        <form method="POST" action="user/posts/post" enctype="multipart/form-data" id="postForm">
                                             
-                                            <input type="text" name="title" placeholder="Tiêu đề" required 
+                                            <input type="text" name="title" placeholder="Tiêu đề" data-validate="tiêu đề không được để trống"
                                                 style="width: auto; 
                                                        width: 100%; 
                                                        margin-left: 7px; 
                                                        border: none; 
                                                        border-radius: 10px;"
                                             />
-                                            <textarea name="content" rows="2" placeholder="Bạn đang nghĩ gì ?" required></textarea>
+                                            <textarea name="content" rows="2" placeholder="Bạn đang nghĩ gì ?" data-validate="Nội dung không được để trống"></textarea>
                                             <div class="attachments">
                                                 <ul>
                                                     <li>
@@ -649,3 +649,40 @@
         </div>
     </div>	
 </section>
+<script>
+    document.getElementById("postForm").addEventListener("submit", function(event) {
+        const form = event.target;
+        let isValid = true;
+
+        // Kiểm tra tất cả các trường input và textarea có thuộc tính data-validate
+        const fields = form.querySelectorAll("[data-validate]");
+
+        // Xóa tất cả thông báo lỗi cũ trước khi kiểm tra
+        const errorMessages = form.querySelectorAll(".error-message");
+        errorMessages.forEach(function(message) {
+            message.remove();
+        });
+
+        fields.forEach(function(field) {
+            if (!field.value.trim()) {
+                // Tạo phần tử thông báo lỗi
+                const errorMessage = document.createElement("div");
+                errorMessage.classList.add("error-message");
+                errorMessage.style.color = "red"; // Có thể thay đổi màu sắc thông báo theo ý muốn
+                errorMessage.textContent = field.getAttribute("data-validate"); // Lấy thông báo từ thuộc tính data-validate
+                
+                // Chèn thông báo lỗi vào sau trường nhập liệu
+                field.insertAdjacentElement("afterend", errorMessage);
+
+                isValid = false;
+            }
+        });
+
+        // Nếu có trường không hợp lệ, ngừng gửi biểu mẫu
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
+
+</script>
