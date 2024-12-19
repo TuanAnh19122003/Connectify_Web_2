@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
             email: user.email,
             password: user.password,
             name: user.username,
-            profile_picture: user.profile_picture || '/uploads/default_profile.png',
+            profile_picture: user.profile_picture || 'uploads/default.jpg',
             bio: user.bio,
             phone_number: user.phone_number,
             date_of_birth: user.date_of_birth ? format(new Date(user.date_of_birth), 'dd/MM/yyyy') : 'N/A',
