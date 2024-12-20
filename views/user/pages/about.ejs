@@ -300,6 +300,11 @@
                                                                 <button type="button" class="btn btn-secondary btn-sm edit-post-btn" data-post-id="<%= post._id %>" data-toggle="modal" data-target="#editPostModal_<%= post._id %>">
                                                                     Edit
                                                                 </button>
+                                                                <form action="/user/delete-post/<%= post._id %>" method="POST" style="display: inline;">
+                                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa bài đăng này?');">
+                                                                        Delete
+                                                                    </button>
+                                                                </form>
                                                             </div>
                                                             <div class="post-meta d-flex justify-content-between">
                                                                 <p><%= post.content %></p>

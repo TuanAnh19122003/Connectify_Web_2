@@ -269,6 +269,29 @@ router.post('/edit-profile', async (req, res) => {
     }
 });
 
+router.post('/delete-post/:id', async (req, res) => {
+    try {
+        const postId = req.params.id; // Lấy ID bài đăng từ URL
+        const post = await Post.findById(postId); // Tìm bài đăng trong cơ sở dữ liệu
+
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Kiểm tra quyền xóa bài đăng
+        if (post.user_id.toString() !== req.session.user.id) {
+            return res.status(403).send('Bạn không có quyền xóa bài đăng này');
+        }
+
+        // Xóa bài đăng
+        await Post.findByIdAndDelete(postId);
+
+        res.redirect('/user/about/' + req.session.user.id);
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        res.status(500).send('Đã có lỗi xảy ra khi xóa bài đăng.');
+    }
+});
 
 
 module.exports = router;
