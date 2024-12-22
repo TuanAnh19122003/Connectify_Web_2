@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/color.css">
     <link rel="stylesheet" href="/stylesheets/responsive.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <style>
     #friendProfilePic {
@@ -53,6 +54,72 @@
 
     .btn-like:hover, .like-count:hover {
         transform: scale(1.1);
+    }
+    .notification-item {
+        display: flex;
+        align-items: center; /* Căn giữa theo chiều dọc */
+        margin-bottom: 15px;
+    }
+
+    .notification-img {
+        flex-shrink: 0; /* Ngăn ảnh co lại */
+        margin-right: 10px; /* Khoảng cách giữa ảnh và thông tin */
+    }
+
+    .notification-img img {
+        width: 50px; /* Kích thước ảnh */
+        height: 50px; /* Kích thước ảnh */
+        border-radius: 50%; /* Cắt ảnh thành hình tròn */
+    }
+
+    .mesg-meta {
+        flex-direction: column;
+        flex-grow: 1; /* Đảm bảo phần thông tin chiếm hết không gian còn lại */
+    }
+
+    .mesg-meta h6 {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .mesg-meta span {
+        font-size: 12px;
+        color: #888;
+        margin: 5px 0;
+    }
+
+    .mesg-meta i {
+        font-size: 10px;
+        color: #aaa;
+    }
+
+    .action-buttons {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .accept-friend, .reject-friend {
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .accept-friend {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .reject-friend {
+        background-color: #F44336;
+        color: white;
+    }
+
+    .accept-friend:hover, .reject-friend:hover {
+        opacity: 0.8;
     }
 
 </style>
@@ -729,7 +796,7 @@
                 <ul class="chat-users" id="chat-users">
                     <!-- Danh sách bạn bè sẽ được thêm vào đây -->
                 </ul>
-                <div class="chat-box show" id="chat-box" style="display: none; bottom: -350px;">
+                <div class="chat-box show" id="chat-box" style="display: none; bottom: -230px;">
                     <div class="chat-header bg-primary text-white d-flex justify-content-between align-items-center p-2">
                         <img src="/uploads/default.jpg" alt="Friend's Profile Picture" class="rounded-circle" width="35" height="35" id="friendProfilePic">
                         <h5 id="friendName" class="mb-0"></h5> 
@@ -1429,7 +1496,7 @@
                     li.setAttribute('data-friend-id', friend.friend_id._id);
                     li.innerHTML = `
                         <div class="friend-thumbnail">
-                            <img src="/${friend.friend_id.profile_picture || '/images/default_profile.png'}" 
+                            <img src="/${friend.friend_id.profile_picture || 'uploads/default.jpg'}" 
                                 alt="${friend.friend_id.username}" 
                                 class="rounded-circle img-fluid" 
                                 style="width: 40px; height: 40px;">
@@ -1705,8 +1772,76 @@
             messageElement.textContent = `${data.sender_id === userId ? 'Me' : data.sender_name}: ${data.content}`;
             document.getElementById('chat-messages').appendChild(messageElement);
         });
+
+        $(document).ready(function() {
+            $.get('/user/friends/notifications', function(data) {
+                const notificationsContainer = $('.drops-menu');
+                notificationsContainer.empty(); // Xóa các thông báo cũ trước khi thêm mới
+
+                data.friendRequests.forEach(function(friendRequest) {
+                    const notificationHTML = `
+                        <li class="notification-item">
+                            <a href="/user/friends/requests" title="">
+                                <figure class="notification-img">
+                                    <img src="${friendRequest.profilePicture || 'uploads/default.jpg'}" alt="">
+                                    <span class="status f-online"></span>
+                                </figure>
+                                <div class="mesg-meta">
+                                    <h6>${friendRequest.username}</h6>
+                                    <span>sent you a friend request</span>
+                                    <i>${friendRequest.timestamp}</i>
+                                    <div class="action-buttons">
+                                        <button class="accept-friend" data-id="${friendRequest.user_id}">Accept</button>
+                                        <button class="reject-friend" data-id="${friendRequest.user_id}">Reject</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    `;
+                    notificationsContainer.prepend(notificationHTML);
+                });
+
+                // Cập nhật số lượng thông báo
+                $('.bg-purple').text(data.friendRequests.length);
+
+                // Xử lý sự kiện cho nút đồng ý
+                $('.accept-friend').click(function(e) {
+                    e.preventDefault();
+                    const friendId = $(this).data('id');
+                    console.log("Friend ID:", friendId); // Kiểm tra xem giá trị friendId có hợp lệ không
+
+                    if (!friendId) {
+                        alert("ID bạn bè không hợp lệ.");
+                        return;
+                    }
+
+                    $.post('/user/friends/accept', { friend_id: friendId }, function(response) {
+                        alert(response.message); 
+                        location.reload();
+                    }).fail(function(xhr) {
+                        alert('Có lỗi xảy ra: ' + xhr.responseText);
+                    });
+                });
+
+
+                // Xử lý sự kiện cho nút từ chối
+                $('.reject-friend').click(function(e) {
+                    e.preventDefault();
+                    const friendId = $(this).data('id');
+                    // Gửi yêu cầu từ chối kết bạn
+                    $.post('/user/friends/reject', { friend_id: friendId }, function(response) {
+                        alert(response.message);
+                        location.reload();
+                    }).fail(function(xhr) {
+                        alert('Có lỗi xảy ra: ' + xhr.responseText);
+                    });
+                });
+            });
+        });
+
+
     </script>
 
-
+    
 </body>
 </html>

@@ -214,7 +214,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="created_at">Account Created:</label>
-                                                <input type="date" id="created_at" class="form-control" value="<%= user.created_at ? user.created_at.toISOString().split('T')[0] : '' %>">
+                                                <input type="date" id="created_at" style="color: black;" class="form-control" value="<%= user.created_at ? user.created_at.toISOString().split('T')[0] : '' %>" readonly>
                                             </div>
                                         </div>
                                         <div class="modal-footer">

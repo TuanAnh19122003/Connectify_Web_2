@@ -1,6 +1,7 @@
 const express = require('express');
 const { format } = require('date-fns');
 const multer = require('multer');
+const moment = require('moment');
 const router = express.Router();
 
 const usersRouter = require('./users');
@@ -292,6 +293,169 @@ router.post('/delete-post/:id', async (req, res) => {
         res.status(500).send('Đã có lỗi xảy ra khi xóa bài đăng.');
     }
 });
+
+router.get('/friends/suggestions', async (req, res) => {
+    try {
+        const currentUserId = req.session.user.id;
+
+        // Tìm những người không phải chính mình hoặc không phải bạn bè
+        const suggestions = await User.find({
+            _id: { $ne: currentUserId }, // Không phải chính người dùng
+            _id: { $nin: await Friendship.find({
+                $or: [
+                    { user_id: currentUserId },
+                    { friend_id: currentUserId }
+                ]
+            }).distinct('friend_id') } // Loại trừ bạn bè
+        }).select('username profile_picture'); // Lấy các trường cần hiển thị
+
+        res.json(suggestions);
+    } catch (error) {
+        console.error('Error fetching friend suggestions:', error);
+        res.status(500).send('Có lỗi xảy ra.');
+    }
+});
+
+router.post('/friends/send-request', async (req, res) => {
+    try {
+        const { friend_id } = req.body;
+        const user_id = req.session.user.id; // Lấy user_id từ session
+
+        // Kiểm tra nếu không có user_id hoặc friend_id
+        if (!user_id || !friend_id) {
+            return res.status(400).json({ message: 'Cần cung cấp đầy đủ user_id và friend_id.' });
+        }
+
+        // Kiểm tra xem yêu cầu kết bạn đã tồn tại chưa
+        const existingRequest = await Friendship.findOne({
+            $or: [
+                { user_id, friend_id },
+                { user_id: friend_id, friend_id: user_id }
+            ]
+        });
+
+        if (existingRequest) {
+            return res.status(400).json({ message: 'Yêu cầu kết bạn đã tồn tại.' });
+        }
+
+        // Tạo yêu cầu kết bạn mới
+        const newRequest = new Friendship({
+            user_id,
+            friend_id,
+            status: 'pending'
+        });
+
+        await newRequest.save();
+
+        res.json({ message: 'Yêu cầu kết bạn đã được gửi.' });
+    } catch (err) {
+        console.error("Lỗi khi gửi yêu cầu kết bạn:", err);
+        res.status(500).json({ message: 'Có lỗi xảy ra.' });
+    }
+});
+
+
+
+router.get('/friends/notifications', async (req, res) => {
+    try {
+        const user_id = req.session.user.id;
+
+        // Lấy danh sách các yêu cầu kết bạn mới cho người dùng
+        const friendRequests = await Friendship.find({
+            friend_id: user_id, // Tìm yêu cầu kết bạn gửi đến người dùng B
+            status: 'pending'
+        }).populate('user_id', 'username profile_picture');
+
+        const notifications = friendRequests.map(request => ({
+            username: request.user_id.username,
+            profilePicture: request.user_id.profile_picture,
+            timestamp: moment(request.created_at).fromNow(), // Thời gian gửi yêu cầu
+            friend_id: request.friend_id , // ID của người gửi yêu cầu (A)
+            user_id: request.user_id._id // ID của người nhận yêu cầu (B)
+        }));
+
+        res.json({ friendRequests: notifications });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Có lỗi xảy ra.');
+    }
+});
+router.post('/friends/accept', async (req, res) => {
+    try {
+        const user = req.session.user;  // Tài khoản B (người nhận yêu cầu)
+        if (!user) {
+            return res.status(401).json({ message: 'Vui lòng đăng nhập để thực hiện hành động này.' });
+        }
+
+        const { friend_id } = req.body;  // friend_id là tài khoản A (người gửi yêu cầu)
+
+        if (!friend_id) {
+            return res.status(400).json({ message: 'Bạn phải cung cấp friend_id.' });
+        }
+
+        const userId = user.id;  // userId là tài khoản B (người đồng ý)
+
+        // Tìm kết bạn trong cơ sở dữ liệu Friendship
+        const friendship = await Friendship.findOne({
+            $or: [
+                { user_id: userId, friend_id: friend_id },  // B (userId) kết bạn với A (friend_id)
+                { user_id: friend_id, friend_id: userId }   // A (friend_id) kết bạn với B (userId)
+            ]
+        });
+
+        if (!friendship) {
+            return res.status(404).json({ message: 'Không tìm thấy yêu cầu kết bạn.' });
+        }
+
+        // Cập nhật trạng thái yêu cầu kết bạn thành 'accepted'
+        friendship.status = 'accepted';
+        await friendship.save();
+
+        res.json({ message: 'Đã chấp nhận yêu cầu kết bạn.' });
+    } catch (err) {
+        console.error("Lỗi khi xử lý yêu cầu kết bạn:", err);
+        res.status(500).json({ message: 'Có lỗi xảy ra.' });
+    }
+});
+
+router.post('/friends/reject', async (req, res) => {
+    try {
+        const user = req.session.user;  // Tài khoản B (người nhận yêu cầu)
+        if (!user) {
+            return res.status(401).json({ message: 'Vui lòng đăng nhập để thực hiện hành động này.' });
+        }
+
+        const { friend_id } = req.body;  // friend_id là tài khoản A (người gửi yêu cầu)
+
+        if (!friend_id) {
+            return res.status(400).json({ message: 'Bạn phải cung cấp friend_id.' });
+        }
+
+        const userId = user.id;  // userId là tài khoản B (người đồng ý)
+
+        // Tìm kết bạn trong cơ sở dữ liệu Friendship
+        const friendship = await Friendship.findOne({
+            $or: [
+                { user_id: userId, friend_id: friend_id },  // B (userId) kết bạn với A (friend_id)
+                { user_id: friend_id, friend_id: userId }   // A (friend_id) kết bạn với B (userId)
+            ]
+        });
+
+        if (!friendship) {
+            return res.status(404).json({ message: 'Không tìm thấy yêu cầu kết bạn.' });
+        }
+
+        // Cập nhật trạng thái yêu cầu kết bạn thành 'rejected'
+        friendship.status = 'rejected';
+        await friendship.save();
+
+        res.json({ message: 'Đã từ chối yêu cầu kết bạn.' });
+    } catch (err) {
+        console.error("Lỗi khi xử lý yêu cầu kết bạn:", err);
+        res.status(500).json({ message: 'Có lỗi xảy ra.' });
+    }
+});
+
 
 
 module.exports = router;

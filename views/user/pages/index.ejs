@@ -223,43 +223,9 @@
                                     </ul>
                                 </div><!-- recent activites -->
                                 <div class="widget stick-widget">
-                                    <h4 class="widget-title">Who's follownig</h4>
-                                    <ul class="followers">
-                                        <li>
-                                            <figure><img src="images/resources/friend-avatar2.jpg" alt=""></figure>
-                                            <div class="friend-meta">
-                                                <h4><a href="time-line.html" title="">Kelly Bill</a></h4>
-                                                <a href="#" title="" class="underline">Add Friend</a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <figure><img src="images/resources/friend-avatar4.jpg" alt=""></figure>
-                                            <div class="friend-meta">
-                                                <h4><a href="time-line.html" title="">Issabel</a></h4>
-                                                <a href="#" title="" class="underline">Add Friend</a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <figure><img src="images/resources/friend-avatar6.jpg" alt=""></figure>
-                                            <div class="friend-meta">
-                                                <h4><a href="time-line.html" title="">Andrew</a></h4>
-                                                <a href="#" title="" class="underline">Add Friend</a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <figure><img src="images/resources/friend-avatar8.jpg" alt=""></figure>
-                                            <div class="friend-meta">
-                                                <h4><a href="time-line.html" title="">Sophia</a></h4>
-                                                <a href="#" title="" class="underline">Add Friend</a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <figure><img src="images/resources/friend-avatar3.jpg" alt=""></figure>
-                                            <div class="friend-meta">
-                                                <h4><a href="time-line.html" title="">Allen</a></h4>
-                                                <a href="#" title="" class="underline">Add Friend</a>
-                                            </div>
-                                        </li>
+                                    <h4 class="widget-title">Who's following</h4>
+                                    <ul class="followers" id="friend-suggestions">
+                                        <!-- Danh sách bạn bè sẽ được thêm vào đây -->
                                     </ul>
                                 </div><!-- who's following -->
                             </aside>
@@ -682,6 +648,60 @@
         if (!isValid) {
             event.preventDefault();
         }
+    });
+    $(document).on('click', '.add-friend', function (e) {
+        e.preventDefault();
+        const $this = $(this);
+        const friendId = $this.data('id');
+
+        console.log('Friend ID:', friendId);
+
+        // Kiểm tra nếu friendId hoặc userId không hợp lệ
+        if (!friendId ) {
+            alert('Lỗi: friend_id không hợp lệ.');
+            return;
+        }
+
+        // Gửi yêu cầu kết bạn chỉ với friend_id (user_id sẽ lấy từ session trong server)
+        $.post('/user/friends/send-request', { friend_id: friendId })
+            .done(function (response) {
+                console.log('Request sent successfully:', response);
+                $this.text('Request Sent').removeClass('add-friend underline').addClass('disabled');
+            })
+            .fail(function (xhr, status, error) {
+                console.error('Có lỗi xảy ra:', error);
+                alert('Có lỗi xảy ra khi gửi yêu cầu kết bạn: ' + xhr.responseText);
+            });
+    });
+
+    // Lắng nghe sự kiện khi tải trang
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/user/friends/suggestions')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('friend-suggestions');
+                container.innerHTML = '';  // Làm sạch nội dung hiện tại
+                data.forEach(friend => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <figure><img src="${friend.profile_picture || 'uploads/default.jpg'}" 
+                            alt="${friend.username}" 
+                            style="width: 100%;height: 42px;">
+                        </figure>
+                        <div class="friend-meta">
+                            <h4><a href="/users/${friend._id}" title="">${friend.username}</a></h4>
+                            <a href="javascript:void(0);" class="underline add-friend" 
+                                data-id="${friend._id}" title="Gửi yêu cầu kết bạn">
+                                Add Friend
+                            </a>
+                        </div>
+                    `;
+                    container.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Có lỗi khi tải dữ liệu gợi ý bạn bè:', error);
+            });
     });
 
 
