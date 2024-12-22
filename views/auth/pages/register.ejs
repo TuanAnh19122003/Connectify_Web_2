@@ -80,7 +80,10 @@
                             <i class="fa fa-lock" aria-hidden="true"></i>
                         </span>
                     </div>
-
+                    <% if (typeof error !== 'undefined') { %>
+                        <p style="color: red;"><%= error %></p>
+                    <% } %>
+                    
                     <div class="container-login100-form-btn">
                         <button class="login100-form-btn" type="submit">Register</button>
                     </div>
