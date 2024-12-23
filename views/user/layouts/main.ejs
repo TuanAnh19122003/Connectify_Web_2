@@ -24,10 +24,10 @@
 </head>
 <style>
     #friendProfilePic {
-        width: 35px; /* Chiều rộng */
-        height: 35px; /* Chiều cao */
-        object-fit: cover; /* Đảm bảo ảnh không bị biến dạng */
-        border-radius: 50%; /* Tạo hình tròn */
+        width: 35px;
+        height: 35px;
+        object-fit: cover;
+        border-radius: 50%;
     }
     .btn-like {
         border: none;
@@ -39,7 +39,7 @@
     }
 
     .btn-like.liked {
-        color: #1877f2; /* Màu xanh Facebook */
+        color: #1877f2;
     }
 
     .like-count i {
@@ -49,7 +49,7 @@
     }
 
     .like-count.liked i {
-        color: #1877f2; /* Màu xanh Facebook khi liked */
+        color: #1877f2;
     }
 
     .btn-like:hover, .like-count:hover {
@@ -57,24 +57,24 @@
     }
     .notification-item {
         display: flex;
-        align-items: center; /* Căn giữa theo chiều dọc */
+        align-items: center;
         margin-bottom: 15px;
     }
 
     .notification-img {
-        flex-shrink: 0; /* Ngăn ảnh co lại */
-        margin-right: 10px; /* Khoảng cách giữa ảnh và thông tin */
+        flex-shrink: 0;
+        margin-right: 10px;
     }
 
     .notification-img img {
-        width: 50px; /* Kích thước ảnh */
-        height: 50px; /* Kích thước ảnh */
-        border-radius: 50%; /* Cắt ảnh thành hình tròn */
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
     }
 
     .mesg-meta {
         flex-direction: column;
-        flex-grow: 1; /* Đảm bảo phần thông tin chiếm hết không gian còn lại */
+        flex-grow: 1;
     }
 
     .mesg-meta h6 {
@@ -1552,7 +1552,7 @@
                                 </div>
                             `).join('') : 
                             `<div class="no-images" style="margin-top: 10px;">
-                                <p>Không có ảnh nào trong bài đăng này.</p>
+                                <p style="padding-left: 14px;">Không có ảnh nào trong bài đăng này.</p>
                             </div>`}
                     </div>
                     <div style="margin-top: 10px;padding: 10px 0;border-top: 1px solid #e0e0e0;"></div>
@@ -1688,17 +1688,17 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io(); // Kết nối đến server socket.io
-        const userId = '<%= user.id %>'; // Lấy ID người dùng từ session
+        const userId = '<%= user.id %>';
 
         // Khi người dùng chọn bạn bè để nhắn tin
         document.getElementById('chat-users').addEventListener('click', function(event) {
             const friendItem = event.target.closest('.friend-item');
             
             if (friendItem) {
-                const friendId = friendItem.dataset.friendId; // Lấy ID bạn bè
-                const friendName = friendItem.querySelector('.friend-info span').textContent; // Lấy tên bạn bè
+                const friendId = friendItem.dataset.friendId;
+                const friendName = friendItem.querySelector('.friend-info span').textContent;
                 const friendProfilePic = friendItem.querySelector('img').src;
-                document.getElementById('friendName').textContent = friendName; // Hiển thị tên bạn bè
+                document.getElementById('friendName').textContent = friendName;
                 document.getElementById('friendProfilePic').src = friendProfilePic;
 
                 // Hiện chat box
@@ -1736,7 +1736,7 @@
                             errorMessage.remove();
                         }, 8000);
                         
-                        return; // Dừng không gửi tin nhắn
+                        return;
                     }
 
                     const messageData = {
@@ -1766,7 +1766,7 @@
         });
 
 
-        // Lắng nghe sự kiện message mới từ server
+        
         socket.on('newMessage', (data) => {
             const messageElement = document.createElement('div');
             messageElement.textContent = `${data.sender_id === userId ? 'Me' : data.sender_name}: ${data.content}`;
@@ -1808,7 +1808,7 @@
                 $('.accept-friend').click(function(e) {
                     e.preventDefault();
                     const friendId = $(this).data('id');
-                    console.log("Friend ID:", friendId); // Kiểm tra xem giá trị friendId có hợp lệ không
+                    console.log("Friend ID:", friendId);
 
                     if (!friendId) {
                         alert("ID bạn bè không hợp lệ.");

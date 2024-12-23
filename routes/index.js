@@ -427,24 +427,22 @@ router.post('/friends/accept', async (req, res) => {
 
 router.post('/friends/reject', async (req, res) => {
     try {
-        const user = req.session.user;  // Tài khoản B (người nhận yêu cầu)
+        const user = req.session.user;
         if (!user) {
             return res.status(401).json({ message: 'Vui lòng đăng nhập để thực hiện hành động này.' });
         }
 
-        const { friend_id } = req.body;  // friend_id là tài khoản A (người gửi yêu cầu)
+        const { friend_id } = req.body;
 
         if (!friend_id) {
             return res.status(400).json({ message: 'Bạn phải cung cấp friend_id.' });
         }
 
-        const userId = user.id;  // userId là tài khoản B (người đồng ý)
-
-        // Tìm kết bạn trong cơ sở dữ liệu Friendship
+        const userId = user.id;
         const friendship = await Friendship.findOne({
             $or: [
-                { user_id: userId, friend_id: friend_id },  // B (userId) kết bạn với A (friend_id)
-                { user_id: friend_id, friend_id: userId }   // A (friend_id) kết bạn với B (userId)
+                { user_id: userId, friend_id: friend_id },
+                { user_id: friend_id, friend_id: userId }
             ]
         });
 

@@ -1,27 +1,27 @@
 <style>
     .list-unstyled li {
-        margin-bottom: 50px; /* Thay đổi giá trị này theo ý muốn */
+        margin-bottom: 50px;
     }
     .post-content {
-        position: relative; /* Đảm bảo rằng các phần tử bên trong được định vị đúng */
+        position: relative;
     }
 
     .post-meta {
-        margin-top: 10px; /* Tạo khoảng cách với nội dung phía trên */
-        padding: 10px 0; /* Tạo khoảng cách bên trong cho phần này */
-        border-top: 1px solid #e0e0e0; /* Tạo đường kẻ trên để phân tách */
+        margin-top: 10px;
+        padding: 10px 0;
+        border-top: 1px solid #e0e0e0;
     }
     .post-images img {
-        width: 100%; /* Đảm bảo ảnh có chiều rộng 100% của cột */
-        height: 200px; /* Giữ tỉ lệ ảnh */
+        width: 100%;
+        height: 200px;
         overflow: auto;
-        border-radius: 5px; /* Bo góc ảnh */
-        transition: transform 0.2s; /* Hiệu ứng khi hover */
+        border-radius: 5px;
+        transition: transform 0.2s;
     }
 
     .post-images img:hover {
-        transform: scale(1.05); /* Tăng kích thước ảnh một chút khi hover */
-        filter: brightness(0.9); /* Thêm hiệu ứng làm tối khi hover */
+        transform: scale(1.05);
+        filter: brightness(0.9);
     }
 </style>
 <section>
@@ -227,9 +227,10 @@
                                     <ul class="followers" id="friend-suggestions">
                                         <!-- Danh sách bạn bè sẽ được thêm vào đây -->
                                     </ul>
-                                </div><!-- who's following -->
+                                </div>
                             </aside>
-                        </div><!-- sidebar -->
+                        </div>
+                        <!-- sidebar -->
                         <div class="col-lg-6">
                             <div class="central-meta postbox">
                                 <span class="create-post">Create post</span>
@@ -262,7 +263,7 @@
                                                     <li>
                                                         <i class="fa fa-image"></i>
                                                         <label class="fileContainer">
-                                                            <input type="file" name="images" multiple> <!-- Cho phép chọn nhiều ảnh -->
+                                                            <input type="file" name="images" multiple>
                                                         </label>
                                                     </li>
                                                     <li>
@@ -550,7 +551,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div><!-- page like widget -->
+                                </div>
+                                <!-- page like widget -->
                                 <div class="widget">
                                     <h4 class="widget-title">Explor Events <a title="" href="#" class="see-all">See All</a></h4>
                                     <div class="rec-events bg-purple">
@@ -563,7 +565,8 @@
                                         <h6><a href="#" title="">2016 The 3rd International Conference</a></h6>
                                         <img src="images/clock.png" alt="">
                                     </div>
-                                </div><!-- explore events -->
+                                </div>
+                                <!-- explore events -->
                                 <div class="widget">
                                     <h4 class="widget-title">Profile intro</h4>
                                     <ul class="short-profile">
@@ -580,7 +583,8 @@
                                             <p>Justin Biber, Shakira, Nati Natasah</p>
                                         </li>
                                     </ul>
-                                </div><!-- profile intro widget -->
+                                </div>
+                                <!-- profile intro widget -->
                                 <div class="widget stick-widget">
                                     <h4 class="widget-title">Recent Links <a title="" href="#" class="see-all">See All</a></h4>
                                     <ul class="recent-links">
@@ -619,11 +623,8 @@
     document.getElementById("postForm").addEventListener("submit", function(event) {
         const form = event.target;
         let isValid = true;
-
-        // Kiểm tra tất cả các trường input và textarea có thuộc tính data-validate
         const fields = form.querySelectorAll("[data-validate]");
 
-        // Xóa tất cả thông báo lỗi cũ trước khi kiểm tra
         const errorMessages = form.querySelectorAll(".error-message");
         errorMessages.forEach(function(message) {
             message.remove();
@@ -634,10 +635,8 @@
                 // Tạo phần tử thông báo lỗi
                 const errorMessage = document.createElement("div");
                 errorMessage.classList.add("error-message");
-                errorMessage.style.color = "red"; // Có thể thay đổi màu sắc thông báo theo ý muốn
-                errorMessage.textContent = field.getAttribute("data-validate"); // Lấy thông báo từ thuộc tính data-validate
-                
-                // Chèn thông báo lỗi vào sau trường nhập liệu
+                errorMessage.style.color = "red"; 
+                errorMessage.textContent = field.getAttribute("data-validate");
                 field.insertAdjacentElement("afterend", errorMessage);
 
                 isValid = false;
@@ -656,7 +655,6 @@
 
         console.log('Friend ID:', friendId);
 
-        // Kiểm tra nếu friendId hoặc userId không hợp lệ
         if (!friendId ) {
             alert('Lỗi: friend_id không hợp lệ.');
             return;
@@ -674,13 +672,12 @@
             });
     });
 
-    // Lắng nghe sự kiện khi tải trang
     document.addEventListener('DOMContentLoaded', () => {
         fetch('/user/friends/suggestions')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('friend-suggestions');
-                container.innerHTML = '';  // Làm sạch nội dung hiện tại
+                container.innerHTML = '';
                 data.forEach(friend => {
                     const li = document.createElement('li');
                     li.innerHTML = `

@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
 // Hiển thị trang đăng ký
 router.get('/register', (req, res) => {
     res.render('auth/pages/register', { 
-        error: null, // Có thể thêm thông báo lỗi nếu có
+        error: null,
         username: '', 
         email: '', 
     });
@@ -107,7 +107,6 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
-    // Kiểm tra mật khẩu hợp lệ
     if (password.length < 6 || !/[a-zA-Z]/.test(password)) {
         return res.render('auth/pages/register', {
             error: 'Mật khẩu phải dài ít nhất 6 ký tự và chứa ít nhất một chữ cái.',
