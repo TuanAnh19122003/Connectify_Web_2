@@ -382,24 +382,24 @@ router.get('/friends/notifications', async (req, res) => {
 });
 router.post('/friends/accept', async (req, res) => {
     try {
-        const user = req.session.user;  // Tài khoản B (người nhận yêu cầu)
+        const user = req.session.user;
         if (!user) {
             return res.status(401).json({ message: 'Vui lòng đăng nhập để thực hiện hành động này.' });
         }
 
-        const { friend_id } = req.body;  // friend_id là tài khoản A (người gửi yêu cầu)
+        const { friend_id } = req.body;
 
         if (!friend_id) {
             return res.status(400).json({ message: 'Bạn phải cung cấp friend_id.' });
         }
 
-        const userId = user.id;  // userId là tài khoản B (người đồng ý)
+        const userId = user.id;
 
-        // Tìm kết bạn trong cơ sở dữ liệu Friendship
+        // Tìm yêu cầu kết bạn trong cơ sở dữ liệu Friendship
         const friendship = await Friendship.findOne({
             $or: [
-                { user_id: userId, friend_id: friend_id },  // B (userId) kết bạn với A (friend_id)
-                { user_id: friend_id, friend_id: userId }   // A (friend_id) kết bạn với B (userId)
+                { user_id: userId, friend_id: friend_id },
+                { user_id: friend_id, friend_id: userId }
             ]
         });
 
@@ -410,6 +410,13 @@ router.post('/friends/accept', async (req, res) => {
         // Cập nhật trạng thái yêu cầu kết bạn thành 'accepted'
         friendship.status = 'accepted';
         await friendship.save();
+
+        const newReverseFriendship = new Friendship({
+            user_id: userId ,
+            friend_id: friend_id,
+            status: 'accepted'
+        });
+        await newReverseFriendship.save();
 
         res.json({ message: 'Đã chấp nhận yêu cầu kết bạn.' });
     } catch (err) {
